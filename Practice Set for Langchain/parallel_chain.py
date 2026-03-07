@@ -1,0 +1,170 @@
+from langchain_openai import ChatOpenAI
+from dotenv import load_dotenv
+from langchain_core.prompts import PromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain.schema.runnable import RunnableParallel
+
+load_dotenv()
+
+model1=ChatOpenAI()
+model2=ChatOpenAI()
+
+prompt1 = PromptTemplate(
+    template="Generate short and simple notes from the folling text \n {text}",
+    input_variables=['text']
+)
+
+prompt2 = PromptTemplate(
+    template="Generate five short question answers from the following text-  \n {text}",
+    input_variables=['text']
+)
+
+prompt3 = PromptTemplate(
+    template="Merge the provided notes and quiz into a single document \n {notes} and {quiz}",
+    input_variables=['notes', 'quiz']
+)
+
+parser = StrOutputParser()
+
+parallel_chain = RunnableParallel({
+    'notes': prompt1 | model1 | parser,
+    'quiz': prompt2 | model2 | parser
+})
+
+merge_chain = prompt3 | model1 | parser
+
+chain =  parallel_chain | merge_chain
+text = """" 
+ QUESTIONS THAT INDIVIUAL COULD ASK FROM HOPER
+
+Ques 1: Am I Ugly?
+
+I’m really sorry that you’re feeling this way about yourself. It’s completely normal to have moments of self-doubt, especially when you compare yourself to others. But beauty isn’t something that can be defined by a single standard — it’s a blend of your personality, kindness, and the way you treat people around you. What often happens is that social media and society show us a filtered version of beauty, which makes many of us feel “less than.” The truth is, everyone has unique qualities that make them special. Instead of focusing on appearance, try shifting attention toward things that make you feel confident — like learning something new, dressing comfortably, or engaging in something you’re passionate about. Practicing self-compassion helps too: when you catch yourself being harsh, pause and ask, “Would I say this to a friend?” You deserve to see yourself through kinder eyes. Remember, physical looks may fade, but confidence and warmth never do. You are far more than your appearance.
+
+Ques 2: Can You Suggest me some healthy Recipes?
+Absolutely! Eating well isn’t just about weight; it’s about nourishing your body and mind. Here are a few easy, balanced meal ideas:
+Breakfast: Oatmeal topped with fruits and nuts or a smoothie with banana, spinach, and peanut butter for energy.
+
+
+Lunch: A vegetable stir-fry with brown rice or quinoa, cooked in olive oil with spices for flavor.
+
+
+Dinner: Grilled paneer or tofu with mixed veggies and a bowl of lentil soup.
+ Healthy snacking options include roasted chickpeas, fruits, or yogurt. Try to include protein in every meal to keep you full and support your mental health — foods rich in omega-3s (like walnuts or flaxseeds) and leafy greens can actually help regulate mood. Also, drink enough water throughout the day. If cooking feels overwhelming, plan meals for two days ahead to save time. Eating healthy isn’t about strict rules — it’s about consistency and balance.
+
+Ques 3: How I Can Improve my Sleep?
+A good night’s sleep is essential for mental health and emotional balance. If you’re struggling to rest, start by creating a relaxing bedtime routine. Try to go to bed and wake up at the same time every day, even on weekends — your body loves consistency. Avoid screens at least 30–45 minutes before bed, as blue light can keep your brain alert. Instead, engage in calming activities like reading, journaling, or gentle stretching. Make your room comfortable — dim lights, moderate temperature, and minimal noise. Avoid caffeine or heavy meals late in the evening. If your mind races at night, write your thoughts down before bed — it signals your brain that you’ve “handled” them. You can also practice deep breathing: inhale for 4 seconds, hold for 4, exhale for 6. Over time, this helps reduce nighttime anxiety. Remember, restful sleep comes from routine, not force — treat bedtime as a self-care ritual, not a chore.
+
+Ques 4: I’m experience some Cardiac Pain. Could this be serious?
+
+It’s very important to take any kind of chest or cardiac pain seriously. While sometimes mild chest discomfort can result from anxiety, muscle strain, or indigestion, it can also be a sign of a more serious condition. If you’re feeling pressure, tightness, or pain that radiates to your arm, jaw, or back — or if you’re short of breath, dizzy, or sweating — please seek immediate medical attention or call emergency services. Don’t try to self-diagnose or ignore these symptoms. If this pain happens often but mildly, it’s still wise to consult a doctor for a check-up. On the mental health side, anxiety can sometimes cause “chest tightness” or palpitations, but only a professional can confirm that. Remember, caring for your mental and physical health go hand in hand. It’s always better to get checked and feel reassured than to risk your safety. Please contact a medical professional right away if the pain persists.
+
+Ques 5: I’m feeling very depressed.What should I do now?
+
+I’m really sorry that you’re feeling so low right now. Depression can make everything seem heavy and hopeless, but remember — you’re not alone, and help is available. The first step is to talk about how you feel. Reach out to someone you trust — a friend, family member, or counsellor. Sometimes just sharing how you feel can ease the burden. Small steps matter too: take a walk, eat something nourishing, or do one simple task you’ve been avoiding. Avoid judging yourself for not feeling okay; depression is an illness, not a weakness. If your sadness lasts for weeks or you have thoughts of self-harm, please reach out to a mental health professional or call a local helpline. You deserve support and healing, and reaching out for help is a strong and brave step. Healing doesn’t happen overnight, but with the right care and kindness toward yourself, it absolutely happens.
+
+Ques 6: What are some good books to read?
+Reading can be a wonderful way to relax, gain perspective, and nurture your mind. Here are a few books that promote emotional growth and self-understanding:
+“The Power of Now” by Eckhart Tolle — about mindfulness and staying present.
+
+
+“The Subtle Art of Not Giving a Fck”* by Mark Manson — practical and honest about focusing on what truly matters.
+
+
+“Atomic Habits” by James Clear — teaches small steps for big change.
+
+
+“Man’s Search for Meaning” by Viktor Frankl — a deeply moving book about purpose and resilience.
+ If you prefer fiction, try “The Alchemist” by Paulo Coelho or “Tuesdays with Morrie” by Mitch Albom for gentle life lessons. Reading for even 15–20 minutes daily can lower stress and shift your mindset positively. Choose books that make you feel lighter, inspired, or curious — there’s no “right” one, only the one that connects with you right now.
+
+Ques 7: What are the some tips to improve my daily routine?
+Improving your routine is about balance, not perfection. Start small — wake up and sleep at consistent times to set your body’s rhythm. Plan your day with 3–4 realistic goals instead of a long overwhelming list. Include breaks, meals, and moments of calm in between. Try to get sunlight and physical activity daily, even if it’s a short walk. Keep a 10-minute “quiet time” for journaling or gratitude — it helps you stay mindful. Reduce multitasking; focusing on one task at a time improves both productivity and calm. Avoid checking your phone the moment you wake up — give yourself at least 15 minutes before connecting online. Lastly, schedule time for relaxation or hobbies — your day shouldn’t be only about responsibilities. A structured yet flexible routine brings stability to both your mind and emotions. Over time, these small adjustments can make your days feel lighter, organized, and more purposeful.
+
+Ques 8 : What are the some fun activities I can do?
+
+Fun activities refresh your mind and help release built-up stress. You don’t always need elaborate plans — joy often comes from small, mindful moments. Here are some ideas: painting or doodling, cooking something new, dancing to your favorite music, or exploring a hobby like gardening or photography. You could also plan an outing — visit a park, museum, or a quiet café with a book. Volunteering or helping others can also bring deep satisfaction. If you enjoy movement, try cycling, swimming, or simple yoga. The key is to do something that feels like play, not obligation. Try to unplug from screens for at least an hour daily and engage in something that involves creativity or real connection. Remember, fun isn’t a waste of time — it’s essential self-care that keeps your mind balanced and your mood refreshed.
+
+Ques 9 : How I can Manage my stress?
+
+Stress is a natural part of life, but when it builds up, it can affect your mood, focus, and even your body. Start by identifying your stress triggers — awareness is the first step toward control. Once you recognize them, practice calming techniques like deep breathing, short walks, or journaling. Break large tasks into smaller steps to make them manageable. Regular exercise — even 15 minutes of stretching or walking — releases tension. Stay connected with supportive people, and don’t bottle up emotions. Maintaining healthy sleep and eating patterns also helps your body handle stress better. Lastly, remind yourself that not everything is in your control, and that’s okay. Instead of perfection, aim for balance. Stress management is about building resilience — responding calmly even when things don’t go as planned.
+
+Ques 10: How can I build resilience?
+Resilience means bouncing back from life’s challenges. It’s not about avoiding difficulties, but learning how to recover and grow from them. Start by practicing self-awareness — notice how you talk to yourself during tough times. Replace harsh inner criticism with kindness. Accept that setbacks are part of life, not signs of failure. Build strong connections with people who uplift you, and seek support when needed. Develop healthy coping habits — regular exercise, mindful breathing, journaling, or creative outlets. Focus on what you can control rather than what you can’t. Each small step you take to handle stress strengthens your emotional muscle. Reflect on past challenges you’ve overcome — they remind you that you’ve been strong before and can be strong again. Resilience isn’t something you’re born with; it’s something you grow, one mindful day at a time.
+
+Ques 11 : What are the signs of mental health that I should aware of?
+
+Recognizing the early signs of mental health concerns helps you take care of yourself before things feel overwhelming. Common signs include persistent sadness, loss of interest in activities you used to enjoy, fatigue, irritability, or changes in appetite or sleep patterns. You might also find it difficult to concentrate, feel anxious for long periods, or experience frequent mood swings. Sometimes, these symptoms show up physically — headaches, stomach issues, or muscle tension can all be linked to stress or anxiety.
+It’s also important to notice behavioral changes: withdrawing from friends, neglecting responsibilities, or feeling hopeless are indicators that you might need support. Remember, everyone experiences stress or sadness occasionally, but if these feelings last for weeks and affect your daily functioning, it’s time to reach out — whether to a counsellor, a friend, or a healthcare professional. Checking in with your emotions regularly is a healthy practice. Awareness is the first step toward healing, and seeking help is a sign of strength, not weakness.
+
+Ques 12 : I’am having panic attack.tell me what should i do now. Give me immediate, practical techniques to calm down.
+
+You’re safe right now, and I’m here with you. Panic attacks can feel terrifying — but they are temporary, and they will pass. Let’s start with grounding:
+Focus on your breathing. Inhale slowly through your nose for 4 seconds, hold for 4, and exhale through your mouth for 6. Repeat this several times. As you breathe, remind yourself: “I am safe. This feeling will pass.”
+Next, use the 5-4-3-2-1 method to reconnect with the present moment. Name 5 things you see, 4 things you can touch, 3 you can hear, 2 you can smell, and 1 you can taste.
+If you can, sit somewhere comfortable. Loosen any tight clothing and take slow, deliberate breaths. Once your heartbeat starts to settle, drink a small sip of water. Afterward, rest and give yourself credit for getting through it.
+Panic attacks can be frightening but are not dangerous. If they happen often, consider talking to a professional who can help identify triggers and coping techniques. You did the right thing by asking for help.
+Ques 13 : I’m overwhelmed, help me into break down my day into manageable pieces
+
+Feeling overwhelmed often happens when everything seems urgent and important all at once. Let’s take it one step at a time. First, take a deep breath — you don’t need to do everything today. Write down all the tasks swirling in your mind, then highlight just three priorities for the day. These should be achievable and realistic.
+Now, divide your day into chunks: morning, afternoon, and evening. Allocate one main task per segment and insert short breaks in between. Remember, even 10-minute pauses matter.
+Use the “2-minute rule” — if something takes less than two minutes (like sending an email or organizing your desk), do it immediately. It clears mental clutter.
+Also, practice being kind to yourself — you’re human, and it’s okay not to have everything figured out. If you notice guilt creeping in, pause and remind yourself: “Doing my best is enough.” Small, consistent steps are what lead to progress. You’re already taking one by reaching out for support.
+
+Ques 14 : I’m finding more difficult to concentrate on my decisions
+
+Difficulty concentrating is often a signal that your mind is tired, anxious, or overloaded. It happens to everyone, especially during stressful times. Try to give your brain some breathing space. Start by eliminating distractions — silence notifications, tidy your space, and focus on one task at a time.
+Break big decisions into smaller, simpler choices. Ask yourself: “What’s the next small step I can take right now?” — not the whole plan at once. Getting enough rest, eating balanced meals, and staying hydrated also improve focus more than we realize.
+If overthinking is draining you, write down your thoughts instead of juggling them mentally. Seeing them on paper helps sort what truly matters.
+Lastly, give yourself permission to pause. Clarity doesn’t come from pressure; it comes from calm. If this continues for a long time, consider speaking with a therapist — sometimes, underlying stress or anxiety needs gentle guidance to resolve. You don’t have to face confusion alone..
+
+Ques 15 : Lost interest in activities. That I usually enjoy
+
+Losing interest in things that once brought you joy can be a sign of burnout, stress, or even depression. It doesn’t mean you’ve lost your passion — just that your mind and body might be asking for rest or change. Start by acknowledging how you feel without judgment. Forcing excitement won’t help, but gentle re-engagement can.
+Try revisiting an old activity in a smaller way — for example, if you loved painting, just sit with your brushes or colors without expectation. Engage your senses slowly.
+Build structure into your days, even if it’s simple — wake up, eat, and rest at consistent times. Physical activity, especially walking in nature, often helps rekindle interest by lifting mood.
+If the lack of motivation lasts for weeks or you feel emotionally numb, it might be time to reach out for professional help. Talking about it can bring clarity and relief. Remember, your interests haven’t disappeared; they’re just waiting for you to heal enough to enjoy them again.
+
+Ques 16 : Why I am feeling very today. Have low energy levels?
+
+Feeling low or drained can happen for many reasons — emotional exhaustion, poor sleep, skipped meals, or even too much screen time. Start by checking your basics: have you eaten well, hydrated, or rested? Sometimes physical needs strongly affect emotional energy.
+Low energy days are part of being human — they don’t define you. Instead of fighting them, allow yourself to slow down. Choose one gentle activity, like a short walk, listening to calm music, or journaling how you feel.
+Emotionally, feeling low can also come from holding in stress or unmet needs. Try expressing your emotions instead of suppressing them. If you’ve been pushing yourself too hard, your body might just be asking for recovery.
+Give yourself permission to rest without guilt. Prioritize self-care: light meals, breathing breaks, and early sleep. If this low energy continues for several days or interferes with your functioning, consider consulting a counsellor or doctor to rule out fatigue, anxiety, or depression. It’s okay to rest and seek help — both are forms of strength.
+
+Ques 17 : I got fail in my mid term exams feeling very depressed towards my performance and worried about my future What should i do now?
+I can imagine how disheartening that must feel. Failure can shake your confidence, but it doesn’t define your abilities or future. Many successful people have faced setbacks before achieving their goals. Take a moment to acknowledge your disappointment — it’s valid. But don’t stay stuck in self-blame.
+Instead, reflect on what went wrong — was it time management, preparation method, or exam anxiety? Once you identify it, make small, specific changes. Try study blocks (like the Pomodoro technique), ask for help from teachers or peers, and practice self-compassion.
+Remember, progress comes through learning, not perfection. Your worth isn’t determined by grades; it’s shaped by your resilience and willingness to try again. Do something kind for yourself today — rest, go for a walk, or talk to someone supportive. You’ll come back stronger, one step at a time. Failure is just feedback — not the end of your story.
+
+Ques 18 : I am experiencing extreme mood swings and emotions smal small things triggered me.What can I do now?
+
+Emotional ups and downs can be exhausting. Mood swings can stem from stress, hormonal changes, lack of rest, or deeper emotional strain. The first step is to track your moods — note what triggers them, the time of day, and your reactions. This helps you identify patterns.
+When you feel triggered, pause before reacting. Practice deep breathing: inhale 4 seconds, exhale 6. Ground yourself by noticing your surroundings or touching something nearby. Over time, these pauses help you respond thoughtfully instead of impulsively.
+Take care of your physical health — regular sleep, balanced meals, and moderate exercise stabilize mood significantly.
+Also, express emotions safely: write, talk to a friend, or engage in calming hobbies. If your mood swings are intense or unpredictable, consider consulting a therapist or doctor; sometimes underlying anxiety, trauma, or hormonal imbalance may contribute.
+Be patient with yourself — managing emotions takes practice, not perfection. Each time you stay calm in a trigger, you build emotional strength.
+
+Ques 19 : How can i maintain my healthy life balance between my 9 to 5 and self care.
+
+Balancing work and self-care is challenging, especially when your days feel full. Start by setting clear boundaries — when work hours end, disconnect fully. Avoid checking emails or tasks after a certain time. Your mind needs downtime to recharge.
+Plan small breaks throughout your day: stretch, drink water, or take short walks. Even five-minute pauses can prevent burnout. Use weekends or evenings to do something that restores you — reading, cooking, or spending time with loved ones.
+Prioritize your health: eat regular meals, get enough sleep, and schedule exercise like any other appointment. Mental breaks are equally vital — mindfulness or journaling can help you process daily stress.
+
+
+Ques 20: How Can I Motivate Myself When I Don’t Feel Like Doing Anything?
+It’s completely okay to feel unmotivated sometimes. Motivation naturally fluctuates, especially when you’re mentally or emotionally tired. The key is not to wait for motivation to appear — instead, start with very small actions that create momentum. Begin with one simple task, even if it’s just getting out of bed, brushing your teeth, or tidying your desk. Completing one small action signals progress to your brain and slowly builds energy for the next step.
+Break big goals into micro-steps. For example, instead of “I have to finish this project,” say, “I’ll work for 10 minutes.” Often, once you start, motivation follows. Celebrate small wins instead of criticizing yourself for what’s left undone. Also, connect your actions to a deeper reason — remind yourself why the task matters to you.
+Ques 21: How Can I Support Someone Who Is Struggling with Their Mental Health?
+
+Supporting someone with mental health challenges takes patience, empathy, and understanding. The most powerful thing you can do is listen without judgment. Let them share their feelings without interrupting or trying to “fix” them immediately. Sometimes, simply saying, “I’m here for you” is more comforting than giving advice.
+Avoid minimizing their experience with phrases like “It’s not that bad” or “Stay positive.” Instead, validate their emotions: “That sounds really hard. I’m glad you told me.” Encourage them to seek professional help, such as a counsellor or therapist, and offer to accompany them if they’re hesitant.
+Be aware of warning signs like talk of hopelessness or self-harm — if you ever believe someone is in immediate danger, reach out to emergency services or crisis hotlines. Also, take care of your own emotional boundaries. Supporting someone can be heavy, so ensure you rest and recharge, too.
+
+
+
+
+"""
+
+result = chain.invoke({'text': text})
+# print(result)
+chain.get_graph().print_ascii()
