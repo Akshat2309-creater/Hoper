@@ -69,6 +69,7 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
   const navLinks = [
     { name: "About", href: "#meet-hoper" },
     { name: "How It Works", href: "#how-it-works" },
+    { name: "Check In", href: "/assessment", isRoute: true },
     { name: "FAQ", href: "/faq", isRoute: true },
     { name: "Contact", href: "#contact" },
   ];

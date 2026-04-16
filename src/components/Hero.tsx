@@ -188,6 +188,14 @@ const Hero = () => {
               >
                 Learn More
               </Button>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 border-2 border-secondary/50 text-secondary hover:bg-secondary/10 w-full sm:w-auto active:scale-95 transition-transform" 
+                onClick={() => navigate('/assessment')}
+              >
+                How are you feeling?
+              </Button>
             </div>
           </div>
 
@@ -222,6 +230,14 @@ const Hero = () => {
                   onClick={() => navigate('/learn-more')}
                 >
                   Learn More
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="text-lg px-8 py-6 border-2 border-secondary/50 text-secondary hover:bg-secondary/10 active:scale-95 transition-transform" 
+                  onClick={() => navigate('/assessment')}
+                >
+                  How are you feeling?
                 </Button>
               </div>
             </div>
