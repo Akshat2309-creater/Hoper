@@ -1,5 +1,12 @@
 # 💫 HOPEr – Mental Health Support Platform
 
+> 🔖 **Checkpoint v1.0** — `2026-04-16`
+> This commit marks the stable baseline of the project **before** any new feature development begins.
+> Safe revert point: all 5 planned features (Multilingual, Mindfulness Mode, Sleep Mode, State Assessment, Personalized Pathways) are yet to be implemented.
+> Branch strategy: each feature will be developed on its own branch and merged into `main` only upon completion.
+
+
+
 HOPEr is an AI-powered mental health companion designed to provide **emotional support, awareness, and guidance** through empathetic conversations.  
 It helps students and individuals manage **stress, anxiety, burnout, and emotional imbalance** by combining human-like understanding with smart, data-driven insights.
 
