@@ -146,8 +146,8 @@ function getResultCard(result: AssessmentResult) {
       emoji: "🌟",
       message:
         "That's wonderful! Even on good days, it's beautiful to take a moment and check in with yourself. HOPEr is here whenever you need a supportive space.",
-      color: "from-mint/60 to-sky/40",
-      badge: "bg-mint text-mint-foreground",
+      color: "from-mint-green/60 to-blue-200/40",
+      badge: "bg-mint-green text-charcoal-gray",
     };
   } else if (score >= 8) {
     return {
@@ -155,8 +155,8 @@ function getResultCard(result: AssessmentResult) {
       emoji: "🌿",
       message:
         "It's okay — life gets heavy sometimes. A few mindful moments can help reset your nervous system. Let HOPEr guide you gently.",
-      color: "from-lavender/60 to-sky/40",
-      badge: "bg-lavender text-lavender-foreground",
+      color: "from-lavender/60 to-blue-200/40",
+      badge: "bg-lavender text-charcoal-gray",
     };
   } else if (score >= 5) {
     return {
@@ -173,8 +173,8 @@ function getResultCard(result: AssessmentResult) {
       emoji: "💙",
       message:
         "It takes courage to check in with yourself. Please know you're seen and valued. Let's take it one step at a time — HOPEr is right here with you.",
-      color: "from-sky/50 to-lavender/50",
-      badge: "bg-sky text-sky-foreground",
+      color: "from-blue-200/50 to-lavender/50",
+      badge: "bg-blue-100 text-blue-900",
     };
   }
 }
