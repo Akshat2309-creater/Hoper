@@ -28,7 +28,7 @@ from pydantic import BaseModel
 # LangChain split packages
 from langchain_community.document_loaders import DirectoryLoader, PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_openai import OpenAIEmbeddings
 
 # Pinecone
 from pinecone.grpc import PineconeGRPC as Pinecone
@@ -44,11 +44,11 @@ from langchain_core.runnables import Runnable, RunnableLambda
 # -----------------------------
 # Config (tunable)
 # -----------------------------
-INDEX_NAME = "hoperbot"
+INDEX_NAME = "hoperbot-openai"
 
 # Embeddings
-EMBED_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
-EMBED_DIM = 384
+EMBED_MODEL = "text-embedding-3-small"
+EMBED_DIM = 1536
 CHUNK_SIZE = 1000     # bigger chunks reduce fragmentation; tune if needed
 CHUNK_OVERLAP = 120
 
@@ -131,7 +131,7 @@ def iter_chunk_batches(
 
 
 def get_embeddings():
-    return HuggingFaceEmbeddings(model_name=EMBED_MODEL)
+    return OpenAIEmbeddings(model=EMBED_MODEL)
 
 
 def get_pinecone_client() -> Pinecone:
@@ -141,7 +141,7 @@ def get_pinecone_client() -> Pinecone:
     # Strip any whitespace that might have been included
     api_key = api_key.strip()
     # Debug: print first/last few chars to verify (without exposing full key)
-    print(f"🔑 Using Pinecone API key (length: {len(api_key)}, starts with: {api_key[:10]}...)")
+    print(f"Using Pinecone API key (length: {len(api_key)}, starts with: {api_key[:10]}...)")
     return Pinecone(api_key=api_key)
 
 
@@ -320,9 +320,9 @@ async def startup_event():
     # Environment variables already loaded at module level
     try:
         bootstrap_pipeline()
-        print("✅ HOPEr API initialized successfully")
+        print("HOPEr API initialized successfully")
     except Exception as e:
-        print(f"❌ Error initializing HOPEr API: {e}")
+        print(f"Error initializing HOPEr API: {e}")
         raise
 
 
