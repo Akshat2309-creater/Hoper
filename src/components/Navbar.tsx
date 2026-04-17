@@ -23,28 +23,28 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
     };
 
     if (mobileMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [mobileMenuOpen]);
 
   const scrollToSection = (href: string) => {
     // Check if we're on the homepage
-    if (window.location.pathname === '/') {
+    if (window.location.pathname === "/") {
       const element = document.querySelector(href);
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+        element.scrollIntoView({ behavior: "smooth" });
       }
     } else {
       // Navigate to homepage first, then scroll
-      navigate('/');
+      navigate("/");
       setTimeout(() => {
         const element = document.querySelector(href);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
+          element.scrollIntoView({ behavior: "smooth" });
         }
       }, 100);
     }
@@ -52,13 +52,13 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
   };
 
   const scrollToTop = () => {
-    navigate('/');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigate("/");
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setMobileMenuOpen(false); // Close mobile menu after clicking
   };
 
   const handleGetStarted = () => {
-    navigate('/chat');
+    navigate("/chat");
     setMobileMenuOpen(false);
   };
 
@@ -70,6 +70,7 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
     { name: "About", href: "#meet-hoper" },
     { name: "How It Works", href: "#how-it-works" },
     { name: "Check In", href: "/assessment", isRoute: true },
+    { name: "Mindfulness", href: "/mindfulness", isRoute: true },
     { name: "FAQ", href: "/faq", isRoute: true },
     { name: "Contact", href: "#contact" },
   ];
@@ -81,13 +82,13 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
           <div className="flex items-center justify-between h-14 sm:h-16">
             {/* Logo */}
             <div className="flex items-center">
-              <button 
+              <button
                 onClick={scrollToTop}
                 className="flex items-center gap-1.5 sm:gap-2 text-secondary-foreground font-bold text-lg sm:text-xl hover:text-primary transition-colors duration-300 active:scale-95"
               >
-                <img 
-                  src="/favicon-icon.svg" 
-                  alt="HOPEr Logo" 
+                <img
+                  src="/favicon-icon.svg"
+                  alt="HOPEr Logo"
                   className="h-8 w-8 sm:h-10 sm:w-10"
                 />
                 HOPEr
@@ -99,7 +100,11 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
               {navLinks.map((link) => (
                 <button
                   key={link.name}
-                  onClick={() => link.isRoute ? navigate(link.href) : scrollToSection(link.href)}
+                  onClick={() =>
+                    link.isRoute
+                      ? navigate(link.href)
+                      : scrollToSection(link.href)
+                  }
                   className="text-secondary-foreground hover:text-primary transition-colors duration-300 font-medium text-sm lg:text-base active:scale-95"
                 >
                   {link.name}
@@ -115,9 +120,9 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
 
             {/* Desktop CTA */}
             <div className="hidden md:block">
-              <Button 
-                variant="navbar" 
-                size="default" 
+              <Button
+                variant="navbar"
+                size="default"
                 onClick={handleGetStarted}
                 className="text-sm lg:text-base px-4 lg:px-6 active:scale-95 transition-transform"
               >
@@ -139,7 +144,7 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
 
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <div 
+        <div
           ref={menuRef}
           className="md:hidden fixed top-16 sm:top-20 left-3 right-3 bg-secondary border border-secondary-foreground/20 rounded-lg shadow-lg z-40"
         >
@@ -170,10 +175,10 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
               >
                 Chat
               </button>
-              <Button 
-                variant="navbar" 
-                size="default" 
-                className="w-full mt-2 active:scale-95 transition-transform" 
+              <Button
+                variant="navbar"
+                size="default"
+                className="w-full mt-2 active:scale-95 transition-transform"
                 onClick={handleGetStarted}
               >
                 Get Started

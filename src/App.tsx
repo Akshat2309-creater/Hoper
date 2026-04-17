@@ -10,6 +10,7 @@ import LearnMore from "./pages/LearnMore";
 import FAQ from "./pages/FAQ";
 import MoodQuizPage from "./pages/MoodQuiz";
 import AssessmentPage from "./pages/AssessmentPage";
+import MindfulnessPage from "./pages/MindfulnessPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/faq" element={<FAQ />} />
           <Route path="/mood-check" element={<MoodQuizPage />} />
           <Route path="/assessment" element={<AssessmentPage />} />
+          <Route path="/mindfulness" element={<MindfulnessPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
