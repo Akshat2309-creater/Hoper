@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollToTop from "@/components/ScrollToTop";
+import { LanguageProvider } from "./contexts/LanguageContext";
 import Index from "./pages/Index";
 import ChatPage from "./pages/ChatPage";
 import LearnMore from "./pages/LearnMore";
@@ -21,21 +22,23 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <ScrollToTop />
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/chat" element={<ChatPage />} />
-          <Route path="/learn-more" element={<LearnMore />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/mood-check" element={<MoodQuizPage />} />
-          <Route path="/assessment" element={<AssessmentPage />} />
-          <Route path="/mindfulness" element={<MindfulnessPage />} />
-          <Route path="/sleep" element={<SleepPage />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <LanguageProvider>
+        <BrowserRouter>
+          <ScrollToTop />
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/chat" element={<ChatPage />} />
+            <Route path="/learn-more" element={<LearnMore />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/mood-check" element={<MoodQuizPage />} />
+            <Route path="/assessment" element={<AssessmentPage />} />
+            <Route path="/mindfulness" element={<MindfulnessPage />} />
+            <Route path="/sleep" element={<SleepPage />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </LanguageProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

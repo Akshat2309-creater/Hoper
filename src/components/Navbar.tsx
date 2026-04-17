@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface NavbarProps {
   onOpenChat?: () => void;
@@ -76,6 +77,28 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
     { name: "Contact", href: "#contact" },
   ];
 
+  const { language, setLanguage, t } = useLanguage();
+  const languageLabels: Record<string, string> = {
+    en: "English",
+    hi: "हिन्दी",
+    es: "Español",
+    fr: "Français",
+    ar: "العربية",
+  };
+
+  const toggleLanguage = () => {
+    const languages: Array<"en" | "hi" | "es" | "fr" | "ar"> = [
+      "en",
+      "hi",
+      "es",
+      "fr",
+      "ar",
+    ];
+    const currentIndex = languages.indexOf(language as any);
+    const nextIndex = (currentIndex + 1) % languages.length;
+    setLanguage(languages[nextIndex]);
+  };
+
   return (
     <>
       <nav className="bg-secondary sticky top-0 z-50 shadow-md px-3 sm:px-4 w-full">
@@ -111,6 +134,16 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
                   {link.name}
                 </button>
               ))}
+              <button
+                onClick={toggleLanguage}
+                className="flex items-center gap-1 text-secondary-foreground hover:text-primary transition-colors duration-300 font-medium text-sm lg:text-base active:scale-95"
+                title="Switch language"
+              >
+                <Globe className="w-4 h-4" />
+                <span className="hidden sm:inline">
+                  {languageLabels[language]}
+                </span>
+              </button>
               <button
                 onClick={openSupportChat}
                 className="text-secondary-foreground hover:text-primary transition-colors duration-300 font-medium text-sm lg:text-base active:scale-95"
@@ -167,6 +200,16 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
                   {link.name}
                 </button>
               ))}
+              <button
+                onClick={() => {
+                  toggleLanguage();
+                  setMobileMenuOpen(false);
+                }}
+                className="flex items-center gap-2 text-secondary-foreground hover:text-primary transition-colors duration-300 font-medium py-2 text-left text-base active:scale-95"
+              >
+                <Globe className="w-4 h-4" />
+                Switch language ({languageLabels[language]})
+              </button>
               <button
                 onClick={() => {
                   openSupportChat();
