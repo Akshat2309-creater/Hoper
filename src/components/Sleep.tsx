@@ -19,6 +19,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type Step =
   | "greeting"
@@ -30,6 +31,7 @@ type Step =
 
 const Sleep = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [currentStep, setCurrentStep] = useState<Step>("greeting");
   const [timeOfDay, setTimeOfDay] = useState<"day" | "evening">("day");
   const [completedSteps, setCompletedSteps] = useState<Step[]>([]);
@@ -46,39 +48,37 @@ const Sleep = () => {
     greeting: {
       title:
         timeOfDay === "day"
-          ? "Planning for better sleep tonight?"
-          : "Ready to wind down?",
+          ? t("sleep.dayGreeting")
+          : t("sleep.nightGreeting"),
       description:
         timeOfDay === "day"
-          ? "Let's prepare for a restful night with some healthy habits."
-          : "Take a moment to relax and transition into sleep mode.",
+          ? t("sleep.dayDesc")
+          : t("sleep.nightDesc"),
       icon: <Moon className="w-8 h-8" />,
     },
     dimming: {
-      title: "Reduce screen brightness",
-      description:
-        "Dim your screen or enable night shift to reduce blue light exposure.",
+      title: t("sleep.dim.title") || "Reduce screen brightness",
+      description: t("sleep.dim.desc") || "Dim your screen or enable night shift to reduce blue light exposure.",
       icon: <Star className="w-8 h-8" />,
     },
     breathing: {
-      title: "Breathing warm-up",
-      description:
-        "A quick 4-7-8 breathing exercise to calm your nervous system.",
+      title: t("sleep.breath.title") || "Breathing warm-up",
+      description: t("sleep.breath.desc") || "A quick 4-7-8 breathing exercise to calm your nervous system.",
       icon: <Wind className="w-8 h-8" />,
     },
     script: {
-      title: "Calming sleep story",
-      description: "Listen to a short guided relaxation script.",
+      title: t("sleep.script.title") || "Calming sleep story",
+      description: t("sleep.script.desc") || "Listen to a short guided relaxation script.",
       icon: <BookOpen className="w-8 h-8" />,
     },
     checklist: {
-      title: "Sleep hygiene checklist",
-      description: "Personalized tips based on your assessment.",
+      title: t("sleep.check.title") || "Sleep hygiene checklist",
+      description: t("sleep.check.desc") || "Personalized tips based on your assessment.",
       icon: <CheckCircle className="w-8 h-8" />,
     },
     close: {
-      title: "You're all set",
-      description: "Great job preparing for sleep. Sweet dreams!",
+      title: t("sleep.close.title") || "You're all set",
+      description: t("sleep.close.desc") || "Great job preparing for sleep. Sweet dreams!",
       icon: <Clock className="w-8 h-8" />,
     },
   };
@@ -129,29 +129,29 @@ const Sleep = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
               <Card className="bg-gradient-to-br from-blue-50 to-cyan-50">
                 <CardHeader>
-                  <CardTitle className="text-lg">Sleep Hygiene Tips</CardTitle>
+                  <CardTitle className="text-lg">{t("sleep.hygiene.title") || "Sleep Hygiene Tips"}</CardTitle>
                   <CardDescription>
-                    Daily habits for better sleep
+                    {t("sleep.hygiene.desc") || "Daily habits for better sleep"}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="text-sm space-y-2">
-                    <li>• Avoid caffeine after 2 PM</li>
-                    <li>• Keep your bedroom cool and dark</li>
-                    <li>• Stick to a consistent bedtime</li>
+                    <li>• {t("sleep.hygiene.i1") || "Avoid caffeine after 2 PM"}</li>
+                    <li>• {t("sleep.hygiene.i2") || "Keep your bedroom cool and dark"}</li>
+                    <li>• {t("sleep.hygiene.i3") || "Stick to a consistent bedtime"}</li>
                   </ul>
                 </CardContent>
               </Card>
               <Card className="bg-gradient-to-br from-purple-50 to-pink-50">
                 <CardHeader>
-                  <CardTitle className="text-lg">Wind‑Down Routine</CardTitle>
-                  <CardDescription>Evening relaxation ideas</CardDescription>
+                  <CardTitle className="text-lg">{t("sleep.winddown.title") || "Wind-Down Routine"}</CardTitle>
+                  <CardDescription>{t("sleep.winddown.desc") || "Evening relaxation ideas"}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="text-sm space-y-2">
-                    <li>• Read a book (no screens)</li>
-                    <li>• Gentle stretching or yoga</li>
-                    <li>• Write down tomorrow's tasks</li>
+                    <li>• {t("sleep.winddown.i1") || "Read a book (no screens)"}</li>
+                    <li>• {t("sleep.winddown.i2") || "Gentle stretching or yoga"}</li>
+                    <li>• {t("sleep.winddown.i3") || "Write down tomorrow's tasks"}</li>
                   </ul>
                 </CardContent>
               </Card>
@@ -171,11 +171,11 @@ const Sleep = () => {
               {steps[step].description}
             </p>
             <div className="bg-muted/50 rounded-xl p-4 text-left">
-              <h3 className="font-semibold mb-2">Quick tips:</h3>
+              <h3 className="font-semibold mb-2">{t("common.quickTips") || "Quick tips:"}</h3>
               <ul className="list-disc pl-5 space-y-1 text-sm">
-                <li>Turn on Night Shift / Blue Light Filter</li>
-                <li>Lower screen brightness below 50%</li>
-                <li>Consider using an app like f.lux</li>
+                <li>{t("sleep.dim.i1") || "Turn on Night Shift / Blue Light Filter"}</li>
+                <li>{t("sleep.dim.i2") || "Lower screen brightness below 50%"}</li>
+                <li>{t("sleep.dim.i3") || "Consider using an app like f.lux"}</li>
               </ul>
             </div>
           </div>
@@ -202,19 +202,19 @@ const Sleep = () => {
             <div className="grid grid-cols-3 gap-4 text-center">
               <div className="bg-blue-100 rounded-xl p-4">
                 <div className="text-2xl font-bold text-blue-800">4</div>
-                <div className="text-sm">Inhale</div>
+                <div className="text-sm">{t("common.inhale") || "Inhale"}</div>
               </div>
               <div className="bg-blue-200 rounded-xl p-4">
                 <div className="text-2xl font-bold text-blue-800">7</div>
-                <div className="text-sm">Hold</div>
+                <div className="text-sm">{t("common.hold") || "Hold"}</div>
               </div>
               <div className="bg-blue-300 rounded-xl p-4">
                 <div className="text-2xl font-bold text-blue-800">8</div>
-                <div className="text-sm">Exhale</div>
+                <div className="text-sm">{t("common.exhale") || "Exhale"}</div>
               </div>
             </div>
             <p className="text-sm text-muted-foreground">
-              Repeat 4 cycles, breathing gently through your nose.
+              {t("sleep.breath.note") || "Repeat 4 cycles, breathing gently through your nose."}
             </p>
           </div>
         );
@@ -230,15 +230,10 @@ const Sleep = () => {
             </p>
             <Card className="bg-gradient-to-br from-amber-50 to-orange-50 text-left p-6">
               <p className="italic text-charcoal-gray/90">
-                "Imagine yourself lying in a comfortable meadow. The sky is a
-                deep, velvety blue, dotted with stars. You feel the soft grass
-                beneath you, and a gentle breeze brushes your skin. With each
-                breath, you let go of the day's worries, sinking deeper into
-                relaxation..."
+                "{t("sleep.script.content") || "Imagine yourself lying in a comfortable meadow. The sky is a deep, velvety blue, dotted with stars. You feel the soft grass beneath you, and a gentle breeze brushes your skin. With each breath, you let go of the day's worries, sinking deeper into relaxation..."}"
               </p>
               <p className="mt-4 text-sm text-muted-foreground">
-                Continue reading at your own pace, or close your eyes and
-                visualize.
+                {t("sleep.script.note") || "Continue reading at your own pace, or close your eyes and visualize."}
               </p>
             </Card>
             <Button
@@ -246,7 +241,7 @@ const Sleep = () => {
               onClick={() => navigate("/mindfulness")}
               className="mt-4"
             >
-              Try a guided meditation instead
+              {t("sleep.btnMindfulnessMode") || "Try a guided meditation instead"}
             </Button>
           </div>
         );
@@ -262,11 +257,11 @@ const Sleep = () => {
             </p>
             <div className="space-y-3 max-w-md mx-auto">
               {[
-                "Avoid news/social media 1 hour before bed",
-                "Drink a cup of herbal tea (chamomile, lavender)",
-                "Set your room temperature to 18–20°C",
-                "Use blackout curtains or a sleep mask",
-                "Keep a notepad by your bed for thoughts",
+                t("sleep.check.i1") || "Avoid news/social media 1 hour before bed",
+                t("sleep.check.i2") || "Drink a cup of herbal tea (chamomile, lavender)",
+                t("sleep.check.i3") || "Set your room temperature to 18–20°C",
+                t("sleep.check.i4") || "Use blackout curtains or a sleep mask",
+                t("sleep.check.i5") || "Keep a notepad by your bed for thoughts",
               ].map((item, idx) => (
                 <div
                   key={idx}
@@ -278,7 +273,7 @@ const Sleep = () => {
               ))}
             </div>
             <p className="text-sm text-muted-foreground">
-              Check off items as you complete them tonight.
+              {t("sleep.check.note") || "Check off items as you complete them tonight."}
             </p>
           </div>
         );
@@ -294,10 +289,10 @@ const Sleep = () => {
             </p>
             <Card className="bg-gradient-to-br from-green-50 to-emerald-100 p-8">
               <h3 className="text-xl font-bold mb-4">
-                You've completed your wind‑down routine!
+                {t("sleep.close.hero") || "You've completed your wind‑down routine!"}
               </h3>
               <p className="mb-6">
-                Sleep well, and remember — HOPEr is here if you need support.
+                {t("sleep.close.sub") || "Sleep well, and remember — HOPEr is here if you need support."}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
@@ -305,15 +300,15 @@ const Sleep = () => {
                     navigate("/chat", {
                       state: {
                         initialMessage:
-                          "I just finished my sleep wind-down routine. Can we talk about sleep?",
+                          t("sleep.chatQuery") || "I just finished my sleep wind-down routine. Can we talk about sleep?",
                       },
                     })
                   }
                 >
-                  Ask HOPEr about sleep
+                  {t("sleep.btnAskHoper") || "Ask HOPEr about sleep"}
                 </Button>
                 <Button variant="outline" onClick={() => navigate("/")}>
-                  Return to homepage
+                  {t("common.backHome") || "Return to homepage"}
                 </Button>
               </div>
             </Card>
@@ -337,17 +332,17 @@ const Sleep = () => {
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
           >
             <Home className="w-4 h-4" />
-            Home
+            {t("common.home") || "Home"}
           </button>
           <div className="flex items-center gap-2">
             <Moon className="w-5 h-5 text-indigo-600" />
-            <span className="font-bold text-charcoal-gray">Sleep Wellness</span>
+            <span className="font-bold text-charcoal-gray">{t("sleep.title")}</span>
           </div>
           <button
             onClick={handleSkipToClose}
             className="text-sm text-muted-foreground hover:text-foreground"
           >
-            Skip
+            {t("sleep.btnSkip")}
           </button>
         </div>
 
@@ -355,7 +350,7 @@ const Sleep = () => {
         <div className="mb-10">
           <div className="flex justify-between text-sm text-muted-foreground mb-2">
             <span>
-              Step {currentIndex + 1} of {stepOrder.length}
+              {t("common.step") || "Step"} {currentIndex + 1} {t("common.of") || "of"} {stepOrder.length}
             </span>
             <span>{Math.round(progress)}%</span>
           </div>
@@ -385,13 +380,13 @@ const Sleep = () => {
             onClick={handleBack}
             disabled={currentIndex === 0}
           >
-            Previous
+            {t("sleep.btnPrevious")}
           </Button>
           <Button
             onClick={handleNext}
             className="bg-indigo-600 hover:bg-indigo-700"
           >
-            {currentStep === "close" ? "Finish" : "Next Step"}
+            {currentStep === "close" ? t("sleep.btnFinish") : t("sleep.btnNext")}
             <ChevronRight className="ml-2 w-4 h-4" />
           </Button>
         </div>
@@ -399,7 +394,7 @@ const Sleep = () => {
         {/* Quick Links */}
         <div className="mt-12 text-center">
           <p className="text-muted-foreground mb-4">
-            Need more help with sleep?
+            {t("sleep.footer") || "Need more help with sleep?"}
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <Button
@@ -407,21 +402,21 @@ const Sleep = () => {
               size="sm"
               onClick={() => navigate("/assessment")}
             >
-              Take sleep assessment
+              {t("sleep.btnAssess") || "Take sleep assessment"}
             </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={() => navigate("/mindfulness")}
             >
-              Try mindfulness
+              {t("mind.title") || "Try mindfulness"}
             </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={() => navigate("/chat")}
             >
-              Chat with HOPEr
+              {t("sleep.btnChat") || "Chat with HOPEr"}
             </Button>
           </div>
         </div>

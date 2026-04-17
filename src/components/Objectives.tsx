@@ -1,48 +1,51 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Objectives = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
+
   const objectives = [
     {
       number: 1,
-      title: "Provide Empathetic Guidance",
-      description: "Reduce stress, motivate students, and foster resilience through compassionate conversations.",
+      title: t("obj.o1.title") || "Provide Empathetic Guidance",
+      description: t("obj.o1.desc") || "Reduce stress, motivate students, and foster resilience through compassionate conversations.",
       circleColor: "bg-golden-yellow",
       textColor: "text-charcoal-gray",
     },
     {
       number: 2,
-      title: "Minimize Hallucinations",
-      description: "Grounded in verified knowledge to ensure responsible and beneficial interactions.",
+      title: t("obj.o2.title") || "Minimize Hallucinations",
+      description: t("obj.o2.desc") || "Grounded in verified knowledge to ensure responsible and beneficial interactions.",
       circleColor: "bg-golden-yellow",
       textColor: "text-charcoal-gray",
     },
     {
       number: 3,
-      title: "Develop Safe AI Companion",
-      description: "Using RAG technology for accurate, reliable, and therapeutically sound responses.",
+      title: t("obj.o3.title") || "Develop Safe AI Companion",
+      description: t("obj.o3.desc") || "Using RAG technology for accurate, reliable, and therapeutically sound responses.",
       circleColor: "bg-golden-yellow",
       textColor: "text-charcoal-gray",
     },
     {
       number: 4,
-      title: "Build Scalable Platform",
-      description: "Designed for schools, universities, and communities to maximize positive impact.",
+      title: t("obj.o4.title") || "Build Scalable Platform",
+      description: t("obj.o4.desc") || "Designed for schools, universities, and communities to maximize positive impact.",
       circleColor: "bg-golden-yellow",
       textColor: "text-charcoal-gray",
     },
     {
       number: 5,
-      title: "Encourage Healthy Habits",
-      description: "Promote well-being while preventing over-reliance on AI, fostering independence.",
+      title: t("obj.o5.title") || "Encourage Healthy Habits",
+      description: t("obj.o5.desc") || "Promote well-being while preventing over-reliance on AI, fostering independence.",
       circleColor: "bg-golden-yellow",
       textColor: "text-charcoal-gray",
     },
     {
       number: 6,
-      title: "Ensure Privacy & Security",
-      description: "Protect user data and maintain confidentiality while providing personalized support.",
+      title: t("obj.o6.title") || "Ensure Privacy & Security",
+      description: t("obj.o6.desc") || "Protect user data and maintain confidentiality while providing personalized support.",
       circleColor: "bg-golden-yellow",
       textColor: "text-charcoal-gray",
     },
@@ -54,7 +57,7 @@ const Objectives = () => {
         <div className="bg-deep-purple rounded-lg p-6 sm:p-8 lg:p-12 shadow-lg">
           <div className="text-center mb-10 sm:mb-12 md:mb-16">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">
-              Our Core <span className="text-golden-yellow">Objectives</span>
+              {t("obj.titlePrefix") || "Our Core"} <span className="text-golden-yellow">{t("obj.titleSuffix") || "Objectives"}</span>
             </h2>
           </div>
 
@@ -90,7 +93,7 @@ const Objectives = () => {
 
           <div className="text-center">
             <Button size="lg" className="bg-golden-yellow text-charcoal-gray hover:bg-golden-yellow/90 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 active:scale-95 transition-transform" onClick={() => navigate('/chat')}>
-              Experience HOPEr Today
+              {t("obj.cta") || "Experience HOPEr Today"}
             </Button>
           </div>
         </div>

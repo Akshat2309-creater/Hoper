@@ -1,34 +1,37 @@
 import { Database, Search, Brain, Shield } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const HowItWorks = () => {
+  const { t } = useLanguage();
+
   const steps = [
     {
       number: 1,
       icon: Database,
-      title: "Verified Knowledge Base",
-      description1: "Clinically verified mental health resources and trusted spiritual wisdom form our foundation.",
-      description2: "Curated from peer-reviewed research, therapeutic practices, and centuries of spiritual guidance.",
+      title: t("hiw.s1.title") || "Verified Knowledge Base",
+      description1: t("hiw.s1.d1") || "Clinically verified mental health resources and trusted spiritual wisdom form our foundation.",
+      description2: t("hiw.s1.d2") || "Curated from peer-reviewed research, therapeutic practices, and centuries of spiritual guidance.",
     },
     {
       number: 2,
       icon: Search,
-      title: "Semantic Retrieval",
-      description1: "Pinecone vector database enables precise, context-aware information retrieval.",
-      description2: "Advanced semantic search ensures the most relevant and helpful content for each query.",
+      title: t("hiw.s2.title") || "Semantic Retrieval",
+      description1: t("hiw.s2.d1") || "Pinecone vector database enables precise, context-aware information retrieval.",
+      description2: t("hiw.s2.d2") || "Advanced semantic search ensures the most relevant and helpful content for each query.",
     },
     {
       number: 3,
       icon: Brain,
-      title: "AI Processing",
-      description1: "Advanced AI architecture synthesizes verified information into empathetic responses.",
-      description2: "Combines retrieval accuracy with generative empathy, minimizing harmful hallucinations.",
+      title: t("hiw.s3.title") || "AI Processing",
+      description1: t("hiw.s3.d1") || "Advanced AI architecture synthesizes verified information into empathetic responses.",
+      description2: t("hiw.s3.d2") || "Combines retrieval accuracy with generative empathy, minimizing harmful hallucinations.",
     },
     {
       number: 4,
       icon: Shield,
-      title: "Safety Measures",
-      description1: "Multiple layers of safety filters and clear disclaimers protect vulnerable users.",
-      description2: "Built-in crisis detection, professional referral systems, and transparent limitations.",
+      title: t("hiw.s4.title") || "Safety Measures",
+      description1: t("hiw.s4.d1") || "Multiple layers of safety filters and clear disclaimers protect vulnerable users.",
+      description2: t("hiw.s4.d2") || "Built-in crisis detection, professional referral systems, and transparent limitations.",
     },
   ];
 
@@ -37,10 +40,10 @@ const HowItWorks = () => {
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-10 sm:mb-12 md:mb-16">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-charcoal-gray mb-4 sm:mb-6">
-            How <span className="text-deep-purple">HOPEr</span> Works
+             {t("hiw.titlePrefix") || "How"} <span className="text-deep-purple">HOPEr</span> {t("hiw.titleSuffix") || "Works"}
           </h2>
           <p className="text-base sm:text-lg text-charcoal-gray max-w-4xl mx-auto px-4">
-            Our methodology combines cutting-edge AI technology with clinically verified mental health resources to deliver safe, empathetic, and effective support.
+            {t("hiw.desc") || "Our methodology combines cutting-edge AI technology with clinically verified mental health resources to deliver safe, empathetic, and effective support."}
           </p>
         </div>
 

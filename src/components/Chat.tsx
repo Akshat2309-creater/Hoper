@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, ArrowLeft, Heart, Shield, Clock, Lightbulb, X } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Message {
   id: string;
@@ -18,10 +19,11 @@ interface ChatProps {
 }
 
 const Chat = ({ isOpen, onClose, initialMessage }: ChatProps) => {
+  const { language, t } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content: "Hello! I'm HOPEr, your empathetic AI companion. I'm here to provide safe, supportive guidance whenever you need it. How are you feeling today?",
+      content: t("chat.greeting") || "Hello! I'm HOPEr, your empathetic AI companion. I'm here to provide safe, supportive guidance whenever you need it. How are you feeling today?",
       isUser: false,
       timestamp: new Date(),
       sources: ["Mental Health First Aid Guide", "Mindfulness for Students"]
@@ -132,7 +134,7 @@ const Chat = ({ isOpen, onClose, initialMessage }: ChatProps) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt: input }),
+        body: JSON.stringify({ prompt: input, language: language }),
       });
 
       if (!response.ok) {
@@ -326,7 +328,7 @@ const Chat = ({ isOpen, onClose, initialMessage }: ChatProps) => {
                       <div className="w-2 h-2 bg-golden-yellow rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
                       <div className="w-2 h-2 bg-golden-yellow rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                     </div>
-                    <span className="text-sm text-charcoal-gray">HOPEr is thinking...</span>
+                    <span className="text-sm text-charcoal-gray">{t("chat.thinking") || "HOPEr is thinking..."}</span>
                   </div>
                 </div>
               </div>
@@ -374,7 +376,7 @@ const Chat = ({ isOpen, onClose, initialMessage }: ChatProps) => {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Share what's on your mind... I'm here to listen and support you."
+                placeholder={t("chat.placeholder") || "Share what's on your mind... I'm here to listen and support you."}
                 className="h-12 text-base bg-golden-yellow/60 text-charcoal-gray placeholder-charcoal-gray/70 focus:bg-golden-yellow focus:ring-2 focus:ring-deep-purple transition-colors duration-200"
                 disabled={isTyping}
                 ref={inputRef}
@@ -527,7 +529,7 @@ const Chat = ({ isOpen, onClose, initialMessage }: ChatProps) => {
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
                         onKeyPress={handleKeyPress}
-                        placeholder="Share what's on your mind... I'm here to listen and support you."
+                        placeholder={t("chat.placeholder") || "Share what's on your mind... I'm here to listen and support you."}
                         className="h-12 text-base bg-golden-yellow/60 text-charcoal-gray placeholder-charcoal-gray/70 focus:bg-golden-yellow focus:ring-2 focus:ring-deep-purple transition-colors duration-200"
                         disabled={isTyping}
                       />

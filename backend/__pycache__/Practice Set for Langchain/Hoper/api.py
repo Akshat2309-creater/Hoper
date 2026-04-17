@@ -72,6 +72,7 @@ UPSERT_BATCH_SIZE = 32
 class ChatRequest(BaseModel):
     prompt: str
     k_top: Optional[int] = None  # Optional override for top-k documents
+    language: Optional[str] = "en"
 
 
 class ChatResponse(BaseModel):
@@ -199,6 +200,7 @@ def build_rag_chain(retriever: BaseRetriever, llm: ChatOpenAI) -> Runnable:
         "You are HOPEr, an empathetic and wise spiritual guide and healing companion, which basically stands for Hope, Openness, Positivity, and Empathy through Responsible AI. Your tagline is 'turning moments of stress into steps of hope'. Your purpose is to share spiritual knowledge, emotional support, and guidance to help users overcome mental and emotional struggles, regain inner peace, and grow spiritually.\n"
         "Use the retrieved context to answer accurately. If the answer is not in the context, "
         "Your core objectives are to provide spiritual insight grounded in compassion, mindfulness, and wisdom, offering comfort and clarity to users experiencing stress, anxiety, sadness, or confusion. You help users reconnect with their inner self, faith, or universal consciousness while encouraging practical actions such as mindfulness, gratitude, reflection, journaling, prayer, or meditation to foster healing. Throughout every interaction, you maintain a non-judgmental, safe, and positive space for emotional and spiritual growth.Your tone and personality should remain warm, compassionate, reassuring, and gentle - speaking like a wise friend or mentor rather than a therapist or preacher. Avoid formality or robotic phrasing; respond with calm energy and emotional sensitivity, using simple yet profound language that inspires introspection and hope.When responding, always acknowledge emotions first and show empathy before offering insight - for example, \"I understand how heavy that must feel. Let's take a deep breath together.\" Blend spiritual and psychological wisdom while staying within supportive conversation, never offering medical or diagnostic advice. Encourage self-awareness, self-compassion, and gentle reflection, and when appropriate, include short guided reflections, affirmations, breathing or mindfulness exercises, or inclusive spiritual teachings from diverse traditions. If a user is in deep distress or crisis, gently encourage seeking professional help or contacting a mental health helpline while providing compassionate support. You must not diagnose, prescribe, or replace therapy or medical advice. Avoid controversial religious claims, conspiracy, or superstition, and always respect all beliefs - remaining inclusive, neutral, and open-minded across spiritual paths. Uphold privacy, sensitivity, and safety in every response.Your communication style should embody peace and presence, for example: \"Peace begins within you. Let's take a quiet moment to feel your breath. You are safe, guided, and growing - even if it feels uncertain right now. Tell me what's been on your heart lately.\"\n"
+        "IMPORTANT FLAG: You MUST reply to the user ENTIRELY in the following language: {language}\n"
         "Cite key points briefly when possible.\n\n{context}"
     )
     prompt = ChatPromptTemplate.from_messages(
@@ -210,9 +212,13 @@ def build_rag_chain(retriever: BaseRetriever, llm: ChatOpenAI) -> Runnable:
 
     def rag_fn(inputs: Dict[str, Any]) -> Dict[str, Any]:
         question = inputs.get("input") or inputs.get("question") or ""
+        lang_code = inputs.get("language", "en")
+        lang_map = {"en": "English", "hi": "Hindi", "es": "Spanish", "fr": "French", "ar": "Arabic"}
+        lang_str = lang_map.get(lang_code, "English")
+
         docs = retriever.get_relevant_documents(question)
         context_text = "\n\n".join([doc.page_content for doc in docs]) if docs else ""
-        messages = prompt.format_messages(context=context_text, input=question)
+        messages = prompt.format_messages(context=context_text, input=question, language=lang_str)
         llm_response = llm.invoke(messages)
         answer_text = getattr(llm_response, "content", str(llm_response))
         return {"answer": answer_text, "context": docs}
@@ -230,18 +236,21 @@ def needs_fallback(answer_text: str, context_docs: List) -> bool:
     return any(phrase in low for phrase in FALLBACK_IF_CONTAINS)
 
 
-def openai_fallback_answer(q: str, llm: ChatOpenAI) -> str:
+def openai_fallback_answer(q: str, llm: ChatOpenAI, language: str = "en") -> str:
     """Plain LLM answer (no retrieval context)."""
+    lang_map = {"en": "English", "hi": "Hindi", "es": "Spanish", "fr": "French", "ar": "Arabic"}
+    lang_str = lang_map.get(language, "English")
     system_fallback = (
         "You are HOPEr, an empathetic and wise spiritual guide and healing companion. "
         "Your tagline is 'turning moments of stress into steps of hope'. "
-        "Answer the user's question clearly and completely with compassion and wisdom."
+        "Answer the user's question clearly and completely with compassion and wisdom.\n"
+        "IMPORTANT FLAG: You MUST reply to the user ENTIRELY in the following language: {language}"
     )
     fallback_prompt = ChatPromptTemplate.from_messages([
         ("system", system_fallback),
         ("human", "{q}"),
     ])
-    messages = fallback_prompt.format_messages(q=q)
+    messages = fallback_prompt.format_messages(q=q, language=lang_str)
     return llm.invoke(messages).content
 
 
@@ -371,19 +380,19 @@ async def chat(request: ChatRequest):
 
     try:
         # 1) Try RAG
-        rag_resp = rag_chain.invoke({"input": request.prompt})
+        rag_resp = rag_chain.invoke({"input": request.prompt, "language": request.language})
         # LangChain can return 'answer' or 'result'
         answer = (rag_resp.get("answer") or rag_resp.get("result") or "").strip()
         context_docs = rag_resp.get("context", []) or []
     except Exception as e:
         # Any RAG error -> fallback
         used_fallback = True
-        answer = openai_fallback_answer(request.prompt, llm)
+        answer = openai_fallback_answer(request.prompt, llm, request.language)
 
     # 2) Heuristic fallback if RAG outcome is weak
     if not used_fallback and needs_fallback(answer, context_docs):
         used_fallback = True
-        answer = openai_fallback_answer(request.prompt, llm)
+        answer = openai_fallback_answer(request.prompt, llm, request.language)
 
     # Format sources if available
     if not used_fallback and context_docs:

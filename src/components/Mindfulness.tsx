@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   Wind,
   Brain,
@@ -23,6 +24,7 @@ type Mode = "breathing" | "grounding" | "reflection";
 
 const Mindfulness = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [selectedMode, setSelectedMode] = useState<Mode | null>(null);
   const [sessionStep, setSessionStep] = useState(0);
   const [isSessionActive, setIsSessionActive] = useState(false);
@@ -30,40 +32,40 @@ const Mindfulness = () => {
   const modes = [
     {
       id: "breathing",
-      title: "Breathing Exercise",
-      description: "Calm your nervous system with guided breathwork.",
+      title: t("mind.m1.title") || "Breathing Exercise",
+      description: t("mind.m1.desc") || "Calm your nervous system with guided breathwork.",
       icon: <Wind className="w-8 h-8" />,
       color: "from-blue-200 to-cyan-100",
       steps: [
-        "Inhale slowly through your nose",
-        "Hold your breath",
-        "Exhale slowly through your mouth",
+        t("mind.m1.s1") || "Inhale slowly through your nose",
+        t("mind.m1.s2") || "Hold your breath",
+        t("mind.m1.s3") || "Exhale slowly through your mouth",
       ],
     },
     {
       id: "grounding",
-      title: "Grounding (5-4-3-2-1)",
-      description: "Connect with your senses to reduce anxiety.",
+      title: t("mind.m2.title") || "Grounding (5-4-3-2-1)",
+      description: t("mind.m2.desc") || "Connect with your senses to reduce anxiety.",
       icon: <Brain className="w-8 h-8" />,
       color: "from-green-200 to-emerald-100",
       steps: [
-        "5 things you can see",
-        "4 things you can touch",
-        "3 things you can hear",
-        "2 things you can smell",
-        "1 thing you can taste",
+        t("mind.m2.s1") || "5 things you can see",
+        t("mind.m2.s2") || "4 things you can touch",
+        t("mind.m2.s3") || "3 things you can hear",
+        t("mind.m2.s4") || "2 things you can smell",
+        t("mind.m2.s5") || "1 thing you can taste",
       ],
     },
     {
       id: "reflection",
-      title: "Guided Reflection",
-      description: "Short journaling prompts to process thoughts.",
+      title: t("mind.m3.title") || "Guided Reflection",
+      description: t("mind.m3.desc") || "Short journaling prompts to process thoughts.",
       icon: <Heart className="w-8 h-8" />,
       color: "from-purple-200 to-pink-100",
       steps: [
-        "What's one thing you're grateful for today?",
-        "What's a small win you had recently?",
-        "What would you like to let go of?",
+        t("mind.m3.s1") || "What's one thing you're grateful for today?",
+        t("mind.m3.s2") || "What's a small win you had recently?",
+        t("mind.m3.s3") || "What would you like to let go of?",
       ],
     },
   ];
@@ -103,10 +105,10 @@ const Mindfulness = () => {
               className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
             >
               <RotateCcw className="w-4 h-4" />
-              End Session
+              {t("mind.end") || "End Session"}
             </button>
             <div className="text-sm font-medium">
-              Step {sessionStep + 1} of {mode.steps.length}
+              {t("common.step") || "Step"} {sessionStep + 1} {t("common.of") || "of"} {mode.steps.length}
             </div>
           </div>
 
@@ -124,7 +126,7 @@ const Mindfulness = () => {
               <div className="my-10">
                 <div className="w-48 h-48 mx-auto rounded-full border-8 border-white/50 animate-pulse bg-gradient-to-r from-blue-300 to-cyan-300"></div>
                 <p className="mt-6 text-xl font-semibold text-charcoal-gray">
-                  Inhale... Hold... Exhale...
+                  {t("mind.breathingLoop") || "Inhale... Hold... Exhale..."}
                 </p>
               </div>
             )}
@@ -137,8 +139,8 @@ const Mindfulness = () => {
               className="w-full max-w-xs mx-auto h-12 text-base font-semibold rounded-xl bg-secondary hover:bg-secondary/90"
             >
               {sessionStep === mode.steps.length - 1
-                ? "Finish Session"
-                : "Next Step"}
+                ? (t("mind.btnFinish") || "Finish Session")
+                : (t("mind.btnNext") || "Next Step")}
               <ChevronRight className="ml-2 w-5 h-5" />
             </Button>
           </div>
@@ -149,7 +151,7 @@ const Mindfulness = () => {
             className="mt-4"
           >
             <Home className="w-4 h-4 mr-2" />
-            Back to Home
+            {t("common.backHome") || "Back to Home"}
           </Button>
         </div>
       </div>
@@ -161,10 +163,10 @@ const Mindfulness = () => {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-10">
           <h1 className="text-3xl sm:text-4xl font-bold text-charcoal-gray font-lustria mb-3">
-            Mindfulness & Grounding
+            {t("mind.title") || "Mindfulness & Grounding"}
           </h1>
           <p className="text-muted-foreground text-lg">
-            Choose a practice to center yourself. No pressure, no rush.
+            {t("mind.subtitle") || "Choose a practice to center yourself. No pressure, no rush."}
           </p>
         </div>
 
@@ -194,7 +196,7 @@ const Mindfulness = () => {
                     </li>
                   ))}
                   {mode.steps.length > 3 && (
-                    <li className="text-muted-foreground">... and more</li>
+                    <li className="text-muted-foreground">{t("common.more") || "... and more"}</li>
                   )}
                 </ul>
               </CardContent>
@@ -208,11 +210,11 @@ const Mindfulness = () => {
             onClick={() => navigate("/assessment")}
             className="mr-4"
           >
-            Take a quick assessment first
+            {t("mind.btnAssess") || "Take a quick assessment first"}
           </Button>
           <Button variant="ghost" onClick={() => navigate("/")}>
             <Home className="w-4 h-4 mr-2" />
-            Back to Home
+            {t("common.backHome") || "Back to Home"}
           </Button>
         </div>
       </div>

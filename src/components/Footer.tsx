@@ -1,7 +1,9 @@
 import { Heart, Mail, MapPin, Phone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Footer = () => {
+  const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
   const navigate = useNavigate();
 
@@ -35,20 +37,20 @@ const Footer = () => {
               <span className="font-bold text-lg sm:text-xl text-background">HOPEr</span>
             </div>
             <p className="text-background/80 text-xs sm:text-sm">
-              Supporting mental health awareness and providing resources for those in need.
+              {t("footer.desc") || "Supporting mental health awareness and providing resources for those in need."}
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-bold text-base sm:text-lg mb-3 sm:mb-4">Quick Links</h3>
+            <h3 className="font-bold text-base sm:text-lg mb-3 sm:mb-4">{t("footer.quickLinks") || "Quick Links"}</h3>
             <ul className="space-y-1.5 sm:space-y-2 text-background/80 text-xs sm:text-sm">
               <li>
                 <button 
                   onClick={() => scrollToSection('#meet-hoper')} 
                   className="hover:text-primary transition-colors text-left active:scale-95"
                 >
-                  About Us
+                  {t("nav.about") || "About Us"}
                 </button>
               </li>
               <li>
@@ -56,7 +58,7 @@ const Footer = () => {
                   onClick={() => scrollToSection('#how-it-works')} 
                   className="hover:text-primary transition-colors text-left active:scale-95"
                 >
-                  How It Works
+                  {t("nav.howItWorks") || "How It Works"}
                 </button>
               </li>
               <li>
@@ -64,7 +66,7 @@ const Footer = () => {
                   onClick={() => scrollToSection('#contact')} 
                   className="hover:text-primary transition-colors text-left active:scale-95"
                 >
-                  Contact
+                  {t("nav.contact") || "Contact"}
                 </button>
               </li>
             </ul>
@@ -72,17 +74,17 @@ const Footer = () => {
 
           {/* Resources */}
           <div>
-            <h3 className="font-bold text-base sm:text-lg mb-3 sm:mb-4">Resources</h3>
+            <h3 className="font-bold text-base sm:text-lg mb-3 sm:mb-4">{t("footer.resources") || "Resources"}</h3>
             <ul className="space-y-1.5 sm:space-y-2 text-background/80 text-xs sm:text-sm">
-              <li><a href="#" className="hover:text-primary transition-colors active:scale-95 inline-block">Crisis Helpline</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors active:scale-95 inline-block">Support Groups</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors active:scale-95 inline-block">Blog</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors active:scale-95 inline-block">{t("footer.crisis") || "Crisis Helpline"}</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors active:scale-95 inline-block">{t("footer.support") || "Support Groups"}</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors active:scale-95 inline-block">{t("footer.blog") || "Blog"}</a></li>
               <li>
                 <button 
                   onClick={() => navigate('/faq')} 
                   className="hover:text-primary transition-colors text-left active:scale-95"
                 >
-                  FAQs
+                  {t("nav.faq") || "FAQs"}
                 </button>
               </li>
             </ul>
@@ -90,7 +92,7 @@ const Footer = () => {
 
           {/* Contact */}
           <div>
-            <h3 className="font-bold text-base sm:text-lg mb-3 sm:mb-4">Contact</h3>
+            <h3 className="font-bold text-base sm:text-lg mb-3 sm:mb-4">{t("nav.contact") || "Contact"}</h3>
             <ul className="space-y-2 sm:space-y-3 text-background/80 text-xs sm:text-sm">
               <li className="flex items-start space-x-2">
                 <Mail className="w-4 h-4 sm:w-5 sm:h-5 mt-0.5 flex-shrink-0" />

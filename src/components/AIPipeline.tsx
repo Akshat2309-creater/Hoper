@@ -1,21 +1,23 @@
 import { useState } from "react";
 import { X } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const AIPipeline = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const { t } = useLanguage();
 
   const pipelineFeatures = [
     {
-      title: "Retrieval-Augmented Generation (RAG)",
-      description: "Combines real-time information retrieval with generative AI for accurate, contextual responses.",
+      title: t("pipe.f1.title") || "Retrieval-Augmented Generation (RAG)",
+      description: t("pipe.f1.desc") || "Combines real-time information retrieval with generative AI for accurate, contextual responses.",
     },
     {
-      title: "Vector Database Technology",
-      description: "Pinecone enables semantic understanding and precise retrieval of relevant mental health content.",
+      title: t("pipe.f2.title") || "Vector Database Technology",
+      description: t("pipe.f2.desc") || "Pinecone enables semantic understanding and precise retrieval of relevant mental health content.",
     },
     {
-      title: "Safety-First Architecture",
-      description: "Multiple safety layers, content filtering, and crisis detection ensure user protection.",
+      title: t("pipe.f3.title") || "Safety-First Architecture",
+      description: t("pipe.f3.desc") || "Multiple safety layers, content filtering, and crisis detection ensure user protection.",
     },
   ];
 
@@ -26,7 +28,7 @@ const AIPipeline = () => {
           {/* Left Side - Advanced AI Pipeline */}
           <div className="space-y-6 sm:space-y-8 text-center lg:text-left">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-charcoal-gray mb-6 sm:mb-8">
-              Advanced AI <span className="text-deep-purple">Pipeline</span>
+              {t("pipe.titlePrefix") || "Advanced AI"} <span className="text-deep-purple">{t("pipe.titleSuffix") || "Pipeline"}</span>
             </h2>
             
             <div className="space-y-5 sm:space-y-6">

@@ -1,8 +1,14 @@
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, Globe } from "lucide-react";
+import { Menu, X, Globe, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface NavbarProps {
   onOpenChat?: () => void;
@@ -67,17 +73,20 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
     window.open(SUPPORT_URL, "_blank", "noopener,noreferrer");
   };
 
-  const navLinks = [
-    { name: "About", href: "#meet-hoper" },
-    { name: "How It Works", href: "#how-it-works" },
-    { name: "Check In", href: "/assessment", isRoute: true },
-    { name: "Mindfulness", href: "/mindfulness", isRoute: true },
-    { name: "Sleep", href: "/sleep", isRoute: true },
-    { name: "FAQ", href: "/faq", isRoute: true },
-    { name: "Contact", href: "#contact" },
+  const { language, setLanguage, t } = useLanguage();
+
+  const mainLinks = [
+    { name: t("nav.about"), href: "#meet-hoper" },
+    { name: t("nav.howItWorks"), href: "#how-it-works" },
+    { name: t("nav.contact"), href: "#contact" },
   ];
 
-  const { language, setLanguage, t } = useLanguage();
+  const featureLinks = [
+    { name: t("nav.checkIn"), href: "/assessment", isRoute: true },
+    { name: t("nav.mindfulness"), href: "/mindfulness", isRoute: true },
+    { name: t("nav.sleep"), href: "/sleep", isRoute: true },
+    { name: t("nav.faq"), href: "/faq", isRoute: true },
+  ];
   const languageLabels: Record<string, string> = {
     en: "English",
     hi: "हिन्दी",
@@ -121,7 +130,7 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-4 lg:space-x-8">
-              {navLinks.map((link) => (
+              {mainLinks.map((link) => (
                 <button
                   key={link.name}
                   onClick={() =>
@@ -134,6 +143,27 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
                   {link.name}
                 </button>
               ))}
+
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-1 text-secondary-foreground hover:text-primary transition-colors duration-300 font-medium text-sm lg:text-base outline-none">
+                  {t("nav.explore") || "Explore"} <ChevronDown className="w-4 h-4 opacity-70" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  {featureLinks.map((link) => (
+                    <DropdownMenuItem
+                      key={link.name}
+                      onClick={() =>
+                        link.isRoute
+                          ? navigate(link.href)
+                          : scrollToSection(link.href)
+                      }
+                      className="cursor-pointer font-medium"
+                    >
+                      {link.name}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
               <button
                 onClick={toggleLanguage}
                 className="flex items-center gap-1 text-secondary-foreground hover:text-primary transition-colors duration-300 font-medium text-sm lg:text-base active:scale-95"
@@ -148,7 +178,7 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
                 onClick={openSupportChat}
                 className="text-secondary-foreground hover:text-primary transition-colors duration-300 font-medium text-sm lg:text-base active:scale-95"
               >
-                Chat
+                {t("nav.chat")}
               </button>
             </div>
 
@@ -160,7 +190,7 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
                 onClick={handleGetStarted}
                 className="text-sm lg:text-base px-4 lg:px-6 active:scale-95 transition-transform"
               >
-                Get Started
+                {t("nav.getStarted") || "Get Started"}
               </Button>
             </div>
 
@@ -184,7 +214,7 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
         >
           <div className="py-3 sm:py-4 px-4 sm:px-6">
             <div className="flex flex-col space-y-3 sm:space-y-4">
-              {navLinks.map((link) => (
+              {mainLinks.map((link) => (
                 <button
                   key={link.name}
                   onClick={() => {
@@ -200,6 +230,30 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
                   {link.name}
                 </button>
               ))}
+              
+              <div className="border-t border-border/50 pt-2 pb-2">
+                <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 block px-2">
+                  {t("nav.explore") || "Explore"}
+                </span>
+                <div className="flex flex-col space-y-2 pl-4">
+                  {featureLinks.map((link) => (
+                    <button
+                      key={link.name}
+                      onClick={() => {
+                        if (link.isRoute) {
+                          navigate(link.href);
+                          setMobileMenuOpen(false);
+                        } else {
+                          scrollToSection(link.href);
+                        }
+                      }}
+                      className="text-secondary-foreground hover:text-primary transition-colors duration-300 font-medium py-1.5 text-left text-sm active:scale-95"
+                    >
+                      {link.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <button
                 onClick={() => {
                   toggleLanguage();
@@ -208,7 +262,7 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
                 className="flex items-center gap-2 text-secondary-foreground hover:text-primary transition-colors duration-300 font-medium py-2 text-left text-base active:scale-95"
               >
                 <Globe className="w-4 h-4" />
-                Switch language ({languageLabels[language]})
+                {t("nav.switchLanguage") || "Switch language"} ({languageLabels[language]})
               </button>
               <button
                 onClick={() => {
@@ -217,7 +271,7 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
                 }}
                 className="text-secondary-foreground hover:text-primary transition-colors duration-300 font-medium py-2 text-left text-base active:scale-95"
               >
-                Chat
+                {t("nav.chat")}
               </button>
               <Button
                 variant="navbar"
@@ -225,7 +279,7 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
                 className="w-full mt-2 active:scale-95 transition-transform"
                 onClick={handleGetStarted}
               >
-                Get Started
+                {t("nav.getStarted") || "Get Started"}
               </Button>
             </div>
           </div>

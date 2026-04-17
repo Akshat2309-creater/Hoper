@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import Features from "@/components/Features";
 import MoodCheckSection from "@/components/MoodCheckSection";
 import Crisis from "@/components/Crisis";
 import MeetHoper from "@/components/MeetHoper";
@@ -15,6 +16,7 @@ const Index = () => {
       <Navbar />
       <main>
         <Hero />
+        <Features />
         <MoodCheckSection />
         <Crisis />
         <MeetHoper />

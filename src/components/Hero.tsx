@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Send } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ChatLaunchCardProps {
   className?: string;
@@ -18,14 +19,16 @@ const ChatLaunchCard = ({
   setStarterMessage,
   onStartChat,
 }: ChatLaunchCardProps) => {
+  const { t } = useLanguage();
+
   const typewriterPhrases = useMemo(
     () => [
-      "What's on your mind?",
-      "How are you feeling today?",
-      "Is there something you'd like to share?",
-      "What's on your mind?",
+      t("hero.typewriter1"),
+      t("hero.typewriter2"),
+      t("hero.typewriter3"),
+      t("hero.typewriter1"),
     ],
-    []
+    [t]
   );
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
@@ -103,7 +106,7 @@ const ChatLaunchCard = ({
                   id="hero-chat-starter"
                   value={starterMessage}
                   onChange={(event) => setStarterMessage(event.target.value)}
-                  placeholder="e.g. I'm feeling overwhelmed with exams..."
+                  placeholder={t("hero.chatPlaceholder")}
                   className="h-12 rounded-xl border border-deep-purple/30 bg-soft-lavender/40 pr-14 text-charcoal-gray placeholder:text-charcoal-gray/60 focus-visible:border-deep-purple/70 focus-visible:ring-2 focus-visible:ring-deep-purple transition-all"
                 />
                 <Button
@@ -127,6 +130,7 @@ const SUPPORT_URL = "http://localhost:8504/";
 
 const Hero = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [starterMessage, setStarterMessage] = useState("");
 
   const goToSupport = () => {
@@ -153,13 +157,13 @@ const Hero = () => {
           <div className="lg:hidden space-y-6 sm:space-y-8">
             {/* Main Heading */}
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground text-center px-4">
-              Turning moments of stress into steps of hope
-              <span className="text-primary"> Matters</span>
+              {t("hero.title")}
+              <span className="text-primary">{t("hero.titleHighlight")}</span>
             </h1>
 
             {/* Subheading */}
             <p className="text-base sm:text-lg md:text-xl text-muted-foreground text-center px-4">
-              A safe, empathetic AI companion providing 24/7 mental health support for students through clinically verified guidance and compassionate conversations.
+              {t("hero.subtitle")}
             </p>
 
             {/* Chat Launch Card */}
@@ -178,7 +182,7 @@ const Hero = () => {
                 className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 w-full sm:w-auto active:scale-95 transition-transform" 
                 onClick={goToSupport}
               >
-                Get Support Now
+                {t("hero.btnSupport")}
               </Button>
               <Button 
                 size="lg" 
@@ -186,7 +190,7 @@ const Hero = () => {
                 className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 border-2 w-full sm:w-auto active:scale-95 transition-transform" 
                 onClick={() => navigate('/learn-more')}
               >
-                Learn More
+                {t("hero.btnLearnMore")}
               </Button>
               <Button 
                 size="lg" 
@@ -194,7 +198,7 @@ const Hero = () => {
                 className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 border-2 border-secondary/50 text-secondary hover:bg-secondary/10 w-full sm:w-auto active:scale-95 transition-transform" 
                 onClick={() => navigate('/assessment')}
               >
-                How are you feeling?
+                {t("hero.btnFeeling")}
               </Button>
             </div>
           </div>
@@ -205,13 +209,13 @@ const Hero = () => {
             <div className="space-y-6 lg:space-y-8">
               {/* Main Heading */}
               <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground">
-                Turning moments of stress into steps of hope
-                <span className="text-primary"> Matters</span>
+                {t("hero.title")}
+                <span className="text-primary">{t("hero.titleHighlight")}</span>
               </h1>
 
               {/* Subheading */}
               <p className="text-lg lg:text-xl text-muted-foreground">
-                A safe, empathetic AI companion providing 24/7 mental health support for students through clinically verified guidance and compassionate conversations.
+                {t("hero.subtitle")}
               </p>
 
               {/* CTA Buttons */}
@@ -221,7 +225,7 @@ const Hero = () => {
                   className="text-lg px-8 py-6 active:scale-95 transition-transform" 
                   onClick={goToSupport}
                 >
-                  Get Support Now
+                  {t("hero.btnSupport")}
                 </Button>
                 <Button 
                   size="lg" 
@@ -229,7 +233,7 @@ const Hero = () => {
                   className="text-lg px-8 py-6 border-2 active:scale-95 transition-transform" 
                   onClick={() => navigate('/learn-more')}
                 >
-                  Learn More
+                  {t("hero.btnLearnMore")}
                 </Button>
                 <Button 
                   size="lg" 
@@ -237,7 +241,7 @@ const Hero = () => {
                   className="text-lg px-8 py-6 border-2 border-secondary/50 text-secondary hover:bg-secondary/10 active:scale-95 transition-transform" 
                   onClick={() => navigate('/assessment')}
                 >
-                  How are you feeling?
+                  {t("hero.btnFeeling")}
                 </Button>
               </div>
             </div>

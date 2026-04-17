@@ -1,36 +1,39 @@
 import { Shield, Heart, Clock, BookOpen, Users, Brain } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const MeetHoper = () => {
+  const { t } = useLanguage();
+
   const features = [
     {
       icon: Shield,
-      title: "Safe & Verified",
-      description: "Built on clinically verified mental health resources and spiritual wisdom with proper safety filters.",
+      title: t("meet.f1.title") || "Safe & Verified",
+      description: t("meet.f1.desc") || "Built on clinically verified mental health resources and spiritual wisdom with proper safety filters.",
     },
     {
       icon: Heart,
-      title: "Empathetic Support",
-      description: "Provides non-judgmental, compassionate conversations designed to reduce stress and build resilience.",
+      title: t("meet.f2.title") || "Empathetic Support",
+      description: t("meet.f2.desc") || "Provides non-judgmental, compassionate conversations designed to reduce stress and build resilience.",
     },
     {
       icon: Clock,
-      title: "24/7 Availability",
-      description: "Always there when you need support, providing instant stress relief and motivational guidance.",
+      title: t("meet.f3.title") || "24/7 Availability",
+      description: t("meet.f3.desc") || "Always there when you need support, providing instant stress relief and motivational guidance.",
     },
     {
       icon: BookOpen,
-      title: "Knowledge-Grounded",
-      description: "All responses sourced from curated mental health texts, ensuring accuracy and therapeutic value.",
+      title: t("meet.f4.title") || "Knowledge-Grounded",
+      description: t("meet.f4.desc") || "All responses sourced from curated mental health texts, ensuring accuracy and therapeutic value.",
     },
     {
       icon: Users,
-      title: "Professional Referrals",
-      description: "Recognizes when professional help is needed and guides users to appropriate mental health resources.",
+      title: t("meet.f5.title") || "Professional Referrals",
+      description: t("meet.f5.desc") || "Recognizes when professional help is needed and guides users to appropriate mental health resources.",
     },
     {
       icon: Brain,
-      title: "AI-Powered Insights",
-      description: "Uses advanced AI to provide personalized mental health guidance tailored to your unique needs and situation.",
+      title: t("meet.f6.title") || "AI-Powered Insights",
+      description: t("meet.f6.desc") || "Uses advanced AI to provide personalized mental health guidance tailored to your unique needs and situation.",
     },
   ];
 
@@ -39,13 +42,13 @@ const MeetHoper = () => {
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-10 sm:mb-12 md:mb-16">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-deep-purple mb-3 sm:mb-4">
-            Meet <span className="text-deep-purple border-b-4 border-golden-yellow">HOPEr</span>
+            {t("meet.titlePrefix") || "Meet"} <span className="text-deep-purple border-b-4 border-golden-yellow">HOPEr</span>
           </h2>
           <p className="text-xl sm:text-2xl font-bold text-golden-yellow mb-4 sm:mb-6">
-            A Safe, Empathetic AI Companion
+            {t("meet.subtitle") || "A Safe, Empathetic AI Companion"}
           </p>
           <p className="text-base sm:text-lg text-charcoal-gray max-w-4xl mx-auto px-4">
-            HOPEr bridges the gap between student mental health needs and available support, providing immediate, safe, and therapeutically sound guidance whenever it's needed.
+            {t("meet.desc") || "HOPEr bridges the gap between student mental health needs and available support, providing immediate, safe, and therapeutically sound guidance whenever it's needed."}
           </p>
         </div>
 
@@ -67,7 +70,7 @@ const MeetHoper = () => {
             </div>
           </div>
           <p className="text-center text-xs sm:text-sm md:text-base text-charcoal-gray/80 mt-4 sm:mt-6 px-4">
-            Understanding the struggles students face and why we built an AI companion that truly cares
+            {t("meet.videoDesc") || "Understanding the struggles students face and why we built an AI companion that truly cares"}
           </p>
         </div>
 
