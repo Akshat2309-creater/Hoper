@@ -88,7 +88,7 @@ const ChatLaunchCard = ({
             <img
               src="/logo.svg"
               alt="HOPEr Logo"
-              className="h-52 w-auto sm:h-60"
+              className="h-32 sm:h-44 md:h-52 w-auto"
               style={{ animation: "float 3s ease-in-out infinite" }}
             />
           </div>
@@ -150,7 +150,7 @@ const Hero = () => {
     navigate("/chat");
   };
   return (
-    <section className="bg-gradient-to-b from-lavender to-background py-12 sm:py-16 md:py-20 px-4">
+    <section className="bg-gradient-to-b from-lavender to-background py-8 sm:py-12 md:py-16 px-4">
       <div className="container mx-auto max-w-6xl">
         <div className="space-y-10 sm:space-y-12 lg:space-y-0">
           {/* Mobile Layout - Logo Above CTA Buttons */}

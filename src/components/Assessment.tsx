@@ -322,10 +322,10 @@ const ResultScreen = ({ result }: { result: AssessmentResult }) => {
   const primary = getPrimaryAction();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-lavender/40 to-background px-4 py-10">
-      <div className="w-full max-w-lg mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="flex flex-col items-center justify-center min-h-screen overflow-y-auto bg-gradient-to-b from-lavender/40 to-background px-4 py-8 sm:py-10">
+      <div className="w-full max-w-lg mx-auto space-y-5 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
         {/* Result Card */}
-        <div className={`rounded-3xl bg-gradient-to-br ${card.color} border border-white/60 shadow-xl p-8 text-center space-y-4`}>
+        <div className={`rounded-3xl bg-gradient-to-br ${card.color} border border-white/60 shadow-xl p-6 sm:p-8 text-center space-y-4`}>
           <div className="text-5xl mb-2">{card.emoji}</div>
           <h2 className="text-xl sm:text-2xl font-bold text-charcoal-gray font-lustria">{card.label}</h2>
           <p className="text-sm sm:text-base text-charcoal-gray/80 leading-relaxed">{card.message}</p>
@@ -453,7 +453,8 @@ const Assessment = () => {
   if (result) return <ResultScreen result={result} />;
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-b from-lavender/30 to-background flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-lavender/30 to-background flex flex-col">
+      <div className="w-full max-w-5xl mx-auto flex flex-col flex-1">
       {/* Header */}
       <div className="bg-secondary px-4 sm:px-6 py-4 flex items-center justify-between border-b-2 border-deep-purple shrink-0">
         <button
@@ -484,21 +485,21 @@ const Assessment = () => {
 
       {/* Question */}
       <div
-        className={`flex-1 flex flex-col items-center justify-center px-4 sm:px-8 py-6 transition-all duration-200 ${
+        className={`flex-1 flex flex-col items-center py-12 sm:py-24 px-4 sm:px-8 transition-all duration-200 ${
           animating ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
         }`}
       >
-        <div className="w-full max-w-xl mx-auto space-y-8">
+        <div className="w-full max-w-4xl mx-auto space-y-12 sm:space-y-16">
           {/* Icon + Question */}
           <div className="text-center space-y-3">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-secondary/20 text-secondary mx-auto">
               {currentQuestion.icon}
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-charcoal-gray font-lustria px-2">
+            <h2 className="text-xl sm:text-2xl font-bold text-charcoal-gray font-lustria px-2 leading-tight">
               {currentQuestion.question}
             </h2>
             {currentQuestion.subtitle && (
-              <p className="text-sm text-muted-foreground">{currentQuestion.subtitle}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">{currentQuestion.subtitle}</p>
             )}
           </div>
 

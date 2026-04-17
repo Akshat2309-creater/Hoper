@@ -97,8 +97,8 @@ const Mindfulness = () => {
     const mode = modes.find((m) => m.id === selectedMode);
     if (!mode) return null;
     return (
-      <div className="fixed inset-0 bg-gradient-to-b from-lavender/30 to-background flex flex-col items-center justify-center px-4">
-        <div className="w-full max-w-2xl mx-auto text-center space-y-8">
+      <div className="min-h-screen bg-gradient-to-b from-lavender/30 to-background flex flex-col items-center py-12 sm:py-24 px-4 overflow-x-hidden">
+        <div className="w-full max-w-5xl mx-auto text-center space-y-12 sm:space-y-16">
           <div className="flex items-center justify-between mb-6">
             <button
               onClick={handleReset}
@@ -116,16 +116,16 @@ const Mindfulness = () => {
             className={`rounded-3xl bg-gradient-to-br ${mode.color} border border-white/60 shadow-2xl p-8`}
           >
             <div className="text-6xl mb-6">{mode.icon}</div>
-            <h2 className="text-2xl font-bold text-charcoal-gray mb-4">
+            <h2 className="text-xl sm:text-2xl font-bold text-charcoal-gray mb-3 sm:mb-4">
               {mode.title}
             </h2>
             <p className="text-lg text-charcoal-gray/80 mb-8">
               {mode.steps[sessionStep]}
             </p>
             {selectedMode === "breathing" && (
-              <div className="my-10">
-                <div className="w-48 h-48 mx-auto rounded-full border-8 border-white/50 animate-pulse bg-gradient-to-r from-blue-300 to-cyan-300"></div>
-                <p className="mt-6 text-xl font-semibold text-charcoal-gray">
+              <div className="my-6 sm:my-10">
+                <div className="w-32 h-32 sm:w-48 sm:h-48 mx-auto rounded-full border-8 border-white/50 animate-pulse bg-gradient-to-r from-blue-300 to-cyan-300"></div>
+                <p className="mt-4 sm:mt-6 text-lg sm:text-xl font-semibold text-charcoal-gray">
                   {t("mind.breathingLoop") || "Inhale... Hold... Exhale..."}
                 </p>
               </div>

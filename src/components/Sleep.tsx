@@ -120,12 +120,6 @@ const Sleep = () => {
         return (
           <div className="text-center space-y-6">
             <div className="text-6xl">🌙</div>
-            <h2 className="text-2xl font-bold text-charcoal-gray">
-              {steps[step].title}
-            </h2>
-            <p className="text-lg text-charcoal-gray/80">
-              {steps[step].description}
-            </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
               <Card className="bg-gradient-to-br from-blue-50 to-cyan-50">
                 <CardHeader>
@@ -164,12 +158,6 @@ const Sleep = () => {
             <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-r from-blue-200 to-indigo-300 flex items-center justify-center">
               <div className="text-5xl">📱</div>
             </div>
-            <h2 className="text-2xl font-bold text-charcoal-gray">
-              {steps[step].title}
-            </h2>
-            <p className="text-lg text-charcoal-gray/80">
-              {steps[step].description}
-            </p>
             <div className="bg-muted/50 rounded-xl p-4 text-left">
               <h3 className="font-semibold mb-2">{t("common.quickTips") || "Quick tips:"}</h3>
               <ul className="list-disc pl-5 space-y-1 text-sm">
@@ -193,12 +181,6 @@ const Sleep = () => {
                 </span>
               </div>
             </div>
-            <h2 className="text-2xl font-bold text-charcoal-gray">
-              {steps[step].title}
-            </h2>
-            <p className="text-lg text-charcoal-gray/80">
-              {steps[step].description}
-            </p>
             <div className="grid grid-cols-3 gap-4 text-center">
               <div className="bg-blue-100 rounded-xl p-4">
                 <div className="text-2xl font-bold text-blue-800">4</div>
@@ -222,12 +204,6 @@ const Sleep = () => {
         return (
           <div className="text-center space-y-6">
             <div className="text-6xl">📖</div>
-            <h2 className="text-2xl font-bold text-charcoal-gray">
-              {steps[step].title}
-            </h2>
-            <p className="text-lg text-charcoal-gray/80">
-              {steps[step].description}
-            </p>
             <Card className="bg-gradient-to-br from-amber-50 to-orange-50 text-left p-6">
               <p className="italic text-charcoal-gray/90">
                 "{t("sleep.script.content") || "Imagine yourself lying in a comfortable meadow. The sky is a deep, velvety blue, dotted with stars. You feel the soft grass beneath you, and a gentle breeze brushes your skin. With each breath, you let go of the day's worries, sinking deeper into relaxation..."}"
@@ -249,12 +225,6 @@ const Sleep = () => {
         return (
           <div className="text-center space-y-6">
             <div className="text-6xl">✅</div>
-            <h2 className="text-2xl font-bold text-charcoal-gray">
-              {steps[step].title}
-            </h2>
-            <p className="text-lg text-charcoal-gray/80">
-              {steps[step].description}
-            </p>
             <div className="space-y-3 max-w-md mx-auto">
               {[
                 t("sleep.check.i1") || "Avoid news/social media 1 hour before bed",
@@ -281,12 +251,6 @@ const Sleep = () => {
         return (
           <div className="text-center space-y-6">
             <div className="text-6xl">💤</div>
-            <h2 className="text-2xl font-bold text-charcoal-gray">
-              {steps[step].title}
-            </h2>
-            <p className="text-lg text-charcoal-gray/80">
-              {steps[step].description}
-            </p>
             <Card className="bg-gradient-to-br from-green-50 to-emerald-100 p-8">
               <h3 className="text-xl font-bold mb-4">
                 {t("sleep.close.hero") || "You've completed your wind‑down routine!"}
@@ -323,8 +287,8 @@ const Sleep = () => {
   const progress = ((currentIndex + 1) / stepOrder.length) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-background px-4 py-10">
-      <div className="max-w-3xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-background px-4 py-12 sm:py-24 flex flex-col items-center justify-center">
+      <div className="w-full max-w-6xl mx-auto flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <button
