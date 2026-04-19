@@ -250,6 +250,18 @@ const Sleep = () => {
           inhaleHint: t("mind.breath.hint.inhale"),
           holdHint: t("mind.breath.hint.hold"),
           exhaleHint: t("mind.breath.hint.exhale"),
+          shoutInhale: t("mind.breath.shout.inhale"),
+          shoutHold: t("mind.breath.shout.hold"),
+          shoutExhale: t("mind.breath.shout.exhale"),
+          statInhale: t("mind.breath.stat.inhale"),
+          statHold: t("mind.breath.stat.hold"),
+          statExhale: t("mind.breath.stat.exhale"),
+          statsCalmLabel: t("mind.breath.stats.calm"),
+          statsBreathsLabel: t("mind.breath.stats.breaths"),
+          statsTodayLabel: t("mind.breath.stats.today"),
+          statsLifetimeLabel: t("mind.breath.stats.lifetime"),
+          statsDisclaimer: t("mind.breath.stats.disclaimer"),
+          mascotAlt: t("mind.breath.mascotAlt"),
         };
         const sleepBreathCfg = BREATHING_PATTERN_CONFIG["relax-478"];
         if (!breathingDone) {

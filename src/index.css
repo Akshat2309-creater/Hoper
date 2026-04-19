@@ -193,3 +193,22 @@ All colors MUST be HSL.
     transform: scale(0.82);
   }
 }
+
+/* Guided breathing — subtle mascot zoom (inhale in / exhale out) */
+@keyframes breathe-mascot-in {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes breathe-mascot-out {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1);
+  }
+}

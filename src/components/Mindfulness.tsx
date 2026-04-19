@@ -32,6 +32,12 @@ import { setWellnessContext } from "@/lib/wellnessContext";
 
 type Mode = "breathing" | "grounding" | "reflection";
 
+const MODE_CARD_ACCENT: Record<Mode, string> = {
+  breathing: "border-t-[3px] border-t-sky-500 dark:border-t-sky-400",
+  grounding: "border-t-[3px] border-t-emerald-600 dark:border-t-emerald-400",
+  reflection: "border-t-[3px] border-t-secondary dark:border-t-primary",
+};
+
 const BREATHING_GOALS: {
   pattern: BreathingPatternId;
   goalKey: "calm" | "sleep" | "quick" | "deep";
@@ -77,7 +83,6 @@ const Mindfulness = () => {
       title: t("mind.m1.title") || "Breathing Exercise",
       description: t("mind.m1.desc") || "Calm your nervous system with guided breathwork.",
       icon: <Wind className="w-8 h-8" />,
-      color: "from-blue-200 to-cyan-100",
       steps: [
         t("mind.m1.s1") || "Inhale slowly through your nose",
         t("mind.m1.s2") || "Hold your breath",
@@ -89,7 +94,6 @@ const Mindfulness = () => {
       title: t("mind.m2.title") || "Grounding (5-4-3-2-1)",
       description: t("mind.m2.desc") || "Connect with your senses to reduce anxiety.",
       icon: <Brain className="w-8 h-8" />,
-      color: "from-green-200 to-emerald-100",
       steps: [
         t("mind.m2.s1") || "5 things you can see",
         t("mind.m2.s2") || "4 things you can touch",
@@ -103,7 +107,6 @@ const Mindfulness = () => {
       title: t("mind.m3.title") || "Guided Reflection",
       description: t("mind.m3.desc") || "Short journaling prompts to process thoughts.",
       icon: <Heart className="w-8 h-8" />,
-      color: "from-purple-200 to-pink-100",
       steps: [
         t("mind.m3.s1") || "What's one thing you're grateful for today?",
         t("mind.m3.s2") || "What's a small win you had recently?",
@@ -133,6 +136,18 @@ const Mindfulness = () => {
     inhaleHint: t("mind.breath.hint.inhale"),
     holdHint: t("mind.breath.hint.hold"),
     exhaleHint: t("mind.breath.hint.exhale"),
+    shoutInhale: t("mind.breath.shout.inhale"),
+    shoutHold: t("mind.breath.shout.hold"),
+    shoutExhale: t("mind.breath.shout.exhale"),
+    statInhale: t("mind.breath.stat.inhale"),
+    statHold: t("mind.breath.stat.hold"),
+    statExhale: t("mind.breath.stat.exhale"),
+    statsCalmLabel: t("mind.breath.stats.calm"),
+    statsBreathsLabel: t("mind.breath.stats.breaths"),
+    statsTodayLabel: t("mind.breath.stats.today"),
+    statsLifetimeLabel: t("mind.breath.stats.lifetime"),
+    statsDisclaimer: t("mind.breath.stats.disclaimer"),
+    mascotAlt: t("mind.breath.mascotAlt"),
   };
 
   const startSession = (mode: Mode) => {
@@ -199,7 +214,7 @@ const Mindfulness = () => {
                 </button>
               </div>
               <div className="mb-10 text-center">
-                <h2 className="font-lustria text-2xl font-bold text-charcoal-gray sm:text-3xl">
+                <h2 className="font-lustria text-2xl font-bold text-foreground sm:text-3xl">
                   {t("mind.breath.pickTitle")}
                 </h2>
                 <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground sm:text-base">
@@ -218,27 +233,27 @@ const Mindfulness = () => {
                         setSelectedBreathPattern(pattern);
                       }
                     }}
-                    className="cursor-pointer border-2 border-deep-purple/15 bg-gradient-to-br from-white/90 to-sky-50/80 transition-all hover:border-secondary/50 hover:shadow-lg"
+                    className="cursor-pointer border-2 border-border bg-card text-card-foreground shadow-sm transition-all hover:border-primary/50 hover:shadow-md dark:border-border dark:bg-card dark:hover:border-primary/60 dark:hover:bg-muted/20"
                     onClick={() => setSelectedBreathPattern(pattern)}
                   >
                     <CardHeader>
                       <div className="flex items-center justify-between gap-3">
                         <div className="flex items-center gap-3">
-                          <div className="rounded-full bg-white/80 p-3 text-deep-purple shadow-sm">
+                          <div className="rounded-full bg-muted p-3 text-secondary shadow-sm ring-1 ring-border/70 dark:bg-secondary/35 dark:text-secondary-foreground dark:ring-border">
                             {icon}
                           </div>
                           <div>
-                            <CardTitle className="text-lg">
+                            <CardTitle className="text-lg text-foreground">
                               {t(`mind.breath.goal.${goalKey}.title`)}
                             </CardTitle>
-                            <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-deep-purple/70">
+                            <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                               {t(`mind.breath.goal.${goalKey}.rhythm`)}
                             </p>
                           </div>
                         </div>
                         <ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground" />
                       </div>
-                      <CardDescription className="pt-2 text-left text-sm leading-relaxed">
+                      <CardDescription className="pt-2 text-left text-sm leading-relaxed text-muted-foreground">
                         {t(`mind.breath.goal.${goalKey}.desc`)}
                       </CardDescription>
                     </CardHeader>
@@ -257,8 +272,8 @@ const Mindfulness = () => {
         : undefined;
 
       return (
-        <div className="min-h-screen bg-gradient-to-b from-lavender/30 to-background px-4 py-10 sm:py-16">
-          <div className="mx-auto flex max-w-xl flex-col">
+        <div className="min-h-screen bg-gradient-to-b from-lavender/30 to-background px-4 py-10 sm:px-6 sm:py-16 lg:px-10">
+          <div className="mx-auto flex w-full max-w-6xl flex-col">
             <div className="mb-6 flex flex-wrap items-center justify-between gap-2">
               <button
                 type="button"
@@ -272,7 +287,7 @@ const Mindfulness = () => {
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="text-deep-purple hover:bg-deep-purple/10"
+                className="text-foreground hover:bg-muted dark:text-primary dark:hover:bg-muted/80"
                 onClick={() => {
                   setSelectedBreathPattern(null);
                 }}
@@ -280,10 +295,10 @@ const Mindfulness = () => {
                 {t("mind.breath.changeExercise")}
               </Button>
             </div>
-            <h2 className="mb-1 text-center font-lustria text-2xl font-bold text-charcoal-gray">
+            <h2 className="mb-1 text-center font-lustria text-2xl font-bold text-foreground sm:text-3xl lg:text-left">
               {t("mind.m1.title")}
             </h2>
-            <p className="mb-8 text-center text-sm text-muted-foreground">
+            <p className="mb-8 text-center text-sm text-muted-foreground lg:mb-10 lg:max-w-2xl lg:text-left sm:text-base">
               {t("mind.m1.desc")}
             </p>
             <GuidedBreathing
@@ -302,15 +317,15 @@ const Mindfulness = () => {
     }
 
     return (
-      <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-lavender/30 to-background px-4 py-16">
-        <div className="max-w-md rounded-3xl border border-white/60 bg-gradient-to-br from-blue-200/80 to-cyan-100/90 p-8 text-center shadow-xl">
+      <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-lavender/30 to-background px-4 py-16 dark:from-lavender/15">
+        <div className="max-w-md rounded-3xl border border-border bg-card p-8 text-center text-card-foreground shadow-xl dark:border-border dark:bg-card dark:shadow-black/30">
           <div className="mb-4 text-5xl" aria-hidden>
-            <Wind className="mx-auto h-14 w-14 text-deep-purple" />
+            <Wind className="mx-auto h-14 w-14 text-primary" />
           </div>
-          <h2 className="font-lustria text-xl font-bold text-charcoal-gray sm:text-2xl">
+          <h2 className="font-lustria text-xl font-bold text-foreground sm:text-2xl">
             {t("mind.breath.completeTitle")}
           </h2>
-          <p className="mt-3 text-sm leading-relaxed text-charcoal-gray/85">
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
             {t("mind.breath.completeBody")}
           </p>
           <div className="mt-8 flex flex-col gap-3">
@@ -322,7 +337,7 @@ const Mindfulness = () => {
             </Button>
             <Button
               variant="outline"
-              className="w-full rounded-xl border-2"
+              className="w-full rounded-xl border-2 border-border bg-background/50 dark:bg-transparent"
               onClick={() => {
                 setBreathingComplete(false);
                 setSelectedBreathPattern(null);
@@ -332,7 +347,7 @@ const Mindfulness = () => {
             </Button>
             <Button
               variant="outline"
-              className="w-full rounded-xl"
+              className="w-full rounded-xl border-border dark:bg-transparent"
               onClick={() => {
                 setWellnessContext({
                   source: "mindfulness",
@@ -369,20 +384,20 @@ const Mindfulness = () => {
               <RotateCcw className="h-4 w-4" />
               {t("mind.end") || "End Session"}
             </button>
-            <div className="text-sm font-medium">
+            <div className="text-sm font-medium text-muted-foreground">
               {t("common.step") || "Step"} {sessionStep + 1} {t("common.of") || "of"}{" "}
               {mode.steps.length}
             </div>
           </div>
 
-          <div
-            className={`rounded-3xl border border-white/60 bg-gradient-to-br ${mode.color} p-8 shadow-2xl`}
-          >
-            <div className="mb-6 text-6xl">{mode.icon}</div>
-            <h2 className="mb-3 font-lustria text-xl font-bold text-charcoal-gray sm:mb-4 sm:text-2xl">
+          <div className="rounded-3xl border border-border bg-card bg-gradient-to-b from-primary/[0.07] to-card p-8 text-card-foreground shadow-2xl dark:border-border dark:from-transparent dark:to-card dark:shadow-black/30">
+            <div className="mb-6 flex justify-center text-primary [&_svg]:h-14 [&_svg]:w-14">
+              {mode.icon}
+            </div>
+            <h2 className="mb-3 font-lustria text-xl font-bold text-foreground sm:mb-4 sm:text-2xl">
               {mode.title}
             </h2>
-            <p className="mb-10 min-h-[4.5rem] text-lg leading-relaxed text-charcoal-gray/85 sm:text-xl">
+            <p className="mb-10 min-h-[4.5rem] text-lg leading-relaxed text-foreground/90 sm:text-xl">
               {mode.steps[sessionStep]}
             </p>
             <Progress
@@ -413,7 +428,7 @@ const Mindfulness = () => {
     <div className="min-h-screen bg-gradient-to-b from-lavender/20 to-background px-4 py-10">
       <div className="mx-auto max-w-6xl">
         <div className="mb-10 text-center">
-          <h1 className="mb-3 font-lustria text-3xl font-bold text-charcoal-gray sm:text-4xl">
+          <h1 className="mb-3 font-lustria text-3xl font-bold text-foreground sm:text-4xl">
             {t("mind.title") || "Mindfulness & Grounding"}
           </h1>
           <p className="text-lg text-muted-foreground">
@@ -425,22 +440,26 @@ const Mindfulness = () => {
           {modes.map((mode) => (
             <Card
               key={mode.id}
-              className={`cursor-pointer border-2 bg-gradient-to-br ${mode.color}/30 transition-all duration-300 hover:scale-[1.02] hover:border-secondary/50`}
+              className={`cursor-pointer border-2 border-border bg-card bg-gradient-to-b from-primary/[0.06] to-card text-card-foreground shadow-sm transition-all duration-300 hover:scale-[1.02] hover:border-primary/45 hover:shadow-md dark:from-transparent dark:to-card ${MODE_CARD_ACCENT[mode.id]}`}
               onClick={() => startSession(mode.id)}
             >
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <div className="rounded-full bg-white/50 p-3">{mode.icon}</div>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                  <div className="rounded-full bg-background/70 p-3 text-foreground ring-1 ring-border/60 dark:bg-muted dark:text-card-foreground dark:ring-border">
+                    {mode.icon}
+                  </div>
+                  <ChevronRight className="h-5 w-5 shrink-0 text-muted-foreground" />
                 </div>
-                <CardTitle className="mt-4 text-xl">{mode.title}</CardTitle>
-                <CardDescription>{mode.description}</CardDescription>
+                <CardTitle className="mt-4 text-xl text-foreground">{mode.title}</CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  {mode.description}
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-1 text-sm text-charcoal-gray/70">
+                <ul className="space-y-1 text-sm text-muted-foreground">
                   {mode.steps.slice(0, 3).map((step, idx) => (
-                    <li key={idx} className="flex items-start">
-                      <span className="mr-2">•</span>
+                    <li key={idx} className="flex items-start text-left">
+                      <span className="mr-2 text-foreground/80">•</span>
                       {step}
                     </li>
                   ))}
