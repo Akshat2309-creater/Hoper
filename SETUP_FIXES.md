@@ -70,7 +70,7 @@ You need two terminals.
 
 **Terminal 1 (Backend)**:
 ```powershell
-cd "backend\__pycache__\Practice Set for Langchain\Hoper"
+cd backend
 .\venv\Scripts\activate
 uvicorn api:app --host 0.0.0.0 --port 8000 --reload
 ```
