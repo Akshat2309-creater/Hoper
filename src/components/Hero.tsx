@@ -80,9 +80,9 @@ const ChatLaunchCard = ({
     <div className={cn("relative w-full max-w-[360px]", className)}>
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 rounded-[28px] bg-gradient-to-br from-soft-lavender/60 via-white to-mint-green/50 opacity-90 blur-2xl"
+        className="pointer-events-none absolute inset-0 rounded-[28px] bg-gradient-to-br from-soft-lavender/45 via-card/80 to-mint-green/35 opacity-95 blur-2xl dark:from-soft-lavender/25 dark:via-card dark:to-mint-green/20"
       />
-      <div className="relative overflow-hidden rounded-[24px] border border-deep-purple/20 bg-white/90 backdrop-blur-xl shadow-[0_25px_60px_rgba(108,74,182,0.18)]">
+      <div className="relative overflow-hidden rounded-[24px] border border-border bg-card text-card-foreground shadow-[0_12px_40px_-8px_rgba(62,45,110,0.14),0_0_0_1px_rgba(108,74,182,0.06)] backdrop-blur-xl dark:border-deep-purple/35 dark:shadow-[0_20px_50px_rgba(0,0,0,0.35)]">
         <div className="relative space-y-6 p-6 sm:p-8">
           <div className="flex flex-col items-center text-center">
             <img
@@ -96,7 +96,7 @@ const ChatLaunchCard = ({
             <div className="space-y-3">
               <label
                 htmlFor="hero-chat-starter"
-                className="flex min-h-[1.5rem] items-center justify-center text-center text-sm font-medium text-charcoal-gray"
+                className="flex min-h-[1.5rem] items-center justify-center text-center text-sm font-medium text-foreground"
                 aria-live="polite"
               >
                 {labelText}
@@ -107,7 +107,7 @@ const ChatLaunchCard = ({
                   value={starterMessage}
                   onChange={(event) => setStarterMessage(event.target.value)}
                   placeholder={t("hero.chatPlaceholder")}
-                  className="h-12 rounded-xl border border-deep-purple/30 bg-soft-lavender/40 pr-14 text-charcoal-gray placeholder:text-charcoal-gray/60 focus-visible:border-deep-purple/70 focus-visible:ring-2 focus-visible:ring-deep-purple transition-all"
+                  className="h-12 rounded-xl border border-input bg-muted/50 pr-14 text-foreground shadow-inner shadow-black/[0.02] placeholder:text-muted-foreground transition-all focus-visible:border-deep-purple/45 focus-visible:ring-2 focus-visible:ring-deep-purple/25 dark:border-deep-purple/40 dark:bg-muted/40 dark:shadow-none dark:focus-visible:ring-deep-purple/60"
                 />
                 <Button
                   type="submit"
@@ -150,7 +150,7 @@ const Hero = () => {
     navigate("/chat");
   };
   return (
-    <section className="bg-gradient-to-b from-lavender to-background py-8 sm:py-12 md:py-16 px-4">
+    <section className="bg-gradient-to-b from-lavender/95 via-background to-background py-8 sm:py-12 md:py-16 px-4 dark:from-secondary/40 dark:via-background dark:to-background">
       <div className="container mx-auto max-w-6xl">
         <div className="space-y-10 sm:space-y-12 lg:space-y-0">
           {/* Mobile Layout - Logo Above CTA Buttons */}

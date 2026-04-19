@@ -22,12 +22,12 @@ const AIPipeline = () => {
   ];
 
   return (
-    <section id="ai-pipeline" className="py-12 sm:py-16 md:py-20 px-4 bg-off-white">
+    <section id="ai-pipeline" className="bg-off-white py-12 px-4 sm:px-6 sm:py-16 md:py-20">
       <div className="container mx-auto max-w-6xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-center">
           {/* Left Side - Advanced AI Pipeline */}
           <div className="space-y-6 sm:space-y-8 text-center lg:text-left">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-charcoal-gray mb-6 sm:mb-8">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-6 sm:mb-8">
               {t("pipe.titlePrefix") || "Advanced AI"} <span className="text-deep-purple">{t("pipe.titleSuffix") || "Pipeline"}</span>
             </h2>
             
@@ -37,7 +37,7 @@ const AIPipeline = () => {
                   <div className="w-3 h-3 bg-deep-purple rounded-sm flex-shrink-0 mt-2"></div>
                   <div>
                     <h3 className="text-lg sm:text-xl font-bold text-deep-purple mb-1 sm:mb-2">{feature.title}</h3>
-                    <p className="text-sm sm:text-base text-charcoal-gray leading-relaxed">{feature.description}</p>
+                    <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{feature.description}</p>
                   </div>
                 </div>
               ))}

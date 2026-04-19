@@ -19,7 +19,7 @@ const Features = () => {
       title: t("nav.mindfulness") || "Mindfulness",
       description: t("features.mindfulnessDesc") || "Explore guided breathing, grounding exercises, and meditation.",
       icon: Leaf,
-      path: "/mindfulness",
+      path: "/mindfulness?mode=breathing",
       color: "bg-emerald-600 text-white",
       hover: "hover:bg-emerald-700"
     },
@@ -27,20 +27,20 @@ const Features = () => {
       title: t("nav.sleep") || "Sleep",
       description: t("features.sleepDesc") || "Prepare for a restful night with relaxation and sleep tracking tools.",
       icon: Moon,
-      path: "/sleep",
+      path: "/sleep?step=breathing",
       color: "bg-indigo-600 text-white",
       hover: "hover:bg-indigo-700"
     }
   ];
 
   return (
-    <section id="features" className="py-12 md:py-16 px-4 bg-off-white/50 border-t border-deep-purple/10">
+    <section id="features" className="bg-off-white/60 py-12 md:py-16 px-4 sm:px-6 dark:bg-off-white/50">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-charcoal-gray mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4">
             {t("features.title") || "Explore Your Wellness"}
           </h2>
-          <p className="text-base sm:text-lg text-charcoal-gray/80 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
             {t("features.subtitle") || "Discover personalized tools designed to help you regain inner peace and manage stress effectively."}
           </p>
         </div>
@@ -50,16 +50,16 @@ const Features = () => {
             <div 
               key={index}
               onClick={() => navigate(feature.path)}
-              className="group cursor-pointer rounded-2xl bg-white border border-deep-purple/10 shadow-lg p-6 sm:p-8 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
+              className="group flex cursor-pointer flex-col justify-between rounded-2xl border border-border bg-card p-6 text-card-foreground shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-deep-purple/20 hover:shadow-md dark:border-deep-purple/25 sm:p-8"
             >
               <div>
-                <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-6 shadow-md transition-transform duration-300 group-hover:scale-110 ${feature.color}`}>
+                <div className={`mb-6 flex h-14 w-14 items-center justify-center rounded-full shadow-sm ring-1 ring-black/[0.04] transition-transform duration-300 group-hover:scale-105 ${feature.color}`}>
                   <feature.icon className="w-7 h-7" />
                 </div>
-                <h3 className="text-xl font-bold text-charcoal-gray mb-3">
+                <h3 className="text-xl font-bold text-foreground mb-3">
                   {feature.title}
                 </h3>
-                <p className="text-charcoal-gray/80 leading-relaxed mb-6">
+                <p className="text-muted-foreground leading-relaxed mb-6">
                   {feature.description}
                 </p>
               </div>

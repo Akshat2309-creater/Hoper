@@ -17,7 +17,7 @@ const CTA = () => {
   const { t } = useLanguage();
 
   return (
-    <section id="contact" className="py-12 sm:py-16 md:py-20 px-4 bg-secondary">
+    <section id="contact" className="bg-secondary py-12 px-4 sm:px-6 sm:py-16 md:py-20">
       <div className="container mx-auto max-w-6xl text-center">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-secondary-foreground mb-4 sm:mb-6 px-4">
           {t("cta.title") || "Ready to Take the First Step?"}
@@ -47,7 +47,7 @@ const CTA = () => {
           <DialogContent className="mx-4 w-[calc(100vw-2rem)] sm:w-auto sm:max-w-lg rounded-2xl p-6">
             <DialogHeader>
               <DialogTitle className="text-xl sm:text-2xl font-bold text-deep-purple">{t("nav.contact") || "Contact Us"}</DialogTitle>
-              <DialogDescription className="text-sm sm:text-base text-charcoal-gray">
+              <DialogDescription className="text-sm sm:text-base text-muted-foreground">
                 {t("cta.dialDesc") || "Choose how you'd like to get in touch with us"}
               </DialogDescription>
             </DialogHeader>
@@ -58,7 +58,7 @@ const CTA = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h4 className="font-semibold text-deep-purple text-sm sm:text-base">{t("cta.email") || "Email Us"}</h4>
-                  <p className="text-xs sm:text-sm text-charcoal-gray break-words">hoperthechatbot@gmail.com</p>
+                  <p className="text-xs sm:text-sm text-foreground/90 break-words">hoperthechatbot@gmail.com</p>
                 </div>
               </a>
               <a href="tel:+919910498377" className="flex w-full items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-soft-lavender rounded-xl hover:bg-soft-lavender/80 transition-all border-2 border-deep-purple/20 hover:border-golden-yellow active:scale-95">
@@ -67,7 +67,7 @@ const CTA = () => {
                 </div>
                 <div className="flex-1">
                   <h4 className="font-semibold text-deep-purple text-sm sm:text-base">{t("cta.call") || "Call Us"}</h4>
-                  <p className="text-xs sm:text-sm text-charcoal-gray">+91 99104 98377</p>
+                  <p className="text-xs sm:text-sm text-foreground/90">+91 99104 98377</p>
                 </div>
               </a>
               <a
@@ -81,7 +81,7 @@ const CTA = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h4 className="font-semibold text-deep-purple text-sm sm:text-base">{t("cta.visit") || "Visit Us"}</h4>
-                  <p className="text-xs sm:text-sm text-charcoal-gray break-words">KCC INSTITUTE OF TECHNOLOGY & MANAGEMENT, 2C, Vashishth Rd, Knowledge Park III, Greater Noida, Uttar Pradesh 201310</p>
+                  <p className="text-xs sm:text-sm text-foreground/90 break-words">KCC INSTITUTE OF TECHNOLOGY & MANAGEMENT, 2C, Vashishth Rd, Knowledge Park III, Greater Noida, Uttar Pradesh 201310</p>
                 </div>
               </a>
             </div>

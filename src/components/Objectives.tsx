@@ -12,52 +12,56 @@ const Objectives = () => {
       title: t("obj.o1.title") || "Provide Empathetic Guidance",
       description: t("obj.o1.desc") || "Reduce stress, motivate students, and foster resilience through compassionate conversations.",
       circleColor: "bg-golden-yellow",
-      textColor: "text-charcoal-gray",
+      textColor: "text-[hsl(26_18%_14%)]",
     },
     {
       number: 2,
       title: t("obj.o2.title") || "Minimize Hallucinations",
       description: t("obj.o2.desc") || "Grounded in verified knowledge to ensure responsible and beneficial interactions.",
       circleColor: "bg-golden-yellow",
-      textColor: "text-charcoal-gray",
+      textColor: "text-[hsl(26_18%_14%)]",
     },
     {
       number: 3,
       title: t("obj.o3.title") || "Develop Safe AI Companion",
       description: t("obj.o3.desc") || "Using RAG technology for accurate, reliable, and therapeutically sound responses.",
       circleColor: "bg-golden-yellow",
-      textColor: "text-charcoal-gray",
+      textColor: "text-[hsl(26_18%_14%)]",
     },
     {
       number: 4,
       title: t("obj.o4.title") || "Build Scalable Platform",
       description: t("obj.o4.desc") || "Designed for schools, universities, and communities to maximize positive impact.",
       circleColor: "bg-golden-yellow",
-      textColor: "text-charcoal-gray",
+      textColor: "text-[hsl(26_18%_14%)]",
     },
     {
       number: 5,
       title: t("obj.o5.title") || "Encourage Healthy Habits",
       description: t("obj.o5.desc") || "Promote well-being while preventing over-reliance on AI, fostering independence.",
       circleColor: "bg-golden-yellow",
-      textColor: "text-charcoal-gray",
+      textColor: "text-[hsl(26_18%_14%)]",
     },
     {
       number: 6,
       title: t("obj.o6.title") || "Ensure Privacy & Security",
       description: t("obj.o6.desc") || "Protect user data and maintain confidentiality while providing personalized support.",
       circleColor: "bg-golden-yellow",
-      textColor: "text-charcoal-gray",
+      textColor: "text-[hsl(26_18%_14%)]",
     },
   ];
 
   return (
-    <section id="objectives" className="py-12 sm:py-16 md:py-20 px-4 bg-off-white">
+    <section
+      id="objectives"
+      className="bg-off-white py-12 px-4 sm:px-6 sm:py-16 md:py-20 dark:bg-background"
+    >
       <div className="container mx-auto max-w-6xl">
-        <div className="bg-deep-purple rounded-lg p-6 sm:p-8 lg:p-12 shadow-lg">
+        <div className="rounded-2xl bg-deep-purple p-6 shadow-lg ring-1 ring-black/5 sm:p-8 lg:p-12 lg:shadow-xl dark:bg-secondary dark:ring-border">
           <div className="text-center mb-10 sm:mb-12 md:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4">
-              {t("obj.titlePrefix") || "Our Core"} <span className="text-golden-yellow">{t("obj.titleSuffix") || "Objectives"}</span>
+            <h2 className="mb-3 text-3xl font-bold text-white dark:text-secondary-foreground sm:mb-4 sm:text-4xl md:text-5xl">
+              {t("obj.titlePrefix") || "Our Core"}{" "}
+              <span className="text-golden-yellow">{t("obj.titleSuffix") || "Objectives"}</span>
             </h2>
           </div>
 
@@ -69,8 +73,12 @@ const Objectives = () => {
                     <span className={`text-base sm:text-lg font-bold ${objective.textColor}`}>{objective.number}</span>
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-lg sm:text-xl font-bold text-white mb-1 sm:mb-2">{objective.title}</h3>
-                    <p className="text-sm sm:text-base text-white/80 leading-relaxed">{objective.description}</p>
+                    <h3 className="mb-1 text-lg font-bold text-white dark:text-secondary-foreground sm:mb-2 sm:text-xl">
+                      {objective.title}
+                    </h3>
+                    <p className="text-sm leading-relaxed text-white/90 dark:text-secondary-foreground/85 sm:text-base">
+                      {objective.description}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -83,8 +91,12 @@ const Objectives = () => {
                     <span className={`text-base sm:text-lg font-bold ${objective.textColor}`}>{objective.number}</span>
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-lg sm:text-xl font-bold text-white mb-1 sm:mb-2">{objective.title}</h3>
-                    <p className="text-sm sm:text-base text-white/80 leading-relaxed">{objective.description}</p>
+                    <h3 className="mb-1 text-lg font-bold text-white dark:text-secondary-foreground sm:mb-2 sm:text-xl">
+                      {objective.title}
+                    </h3>
+                    <p className="text-sm leading-relaxed text-white/90 dark:text-secondary-foreground/85 sm:text-base">
+                      {objective.description}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -92,7 +104,7 @@ const Objectives = () => {
           </div>
 
           <div className="text-center">
-            <Button size="lg" className="bg-golden-yellow text-charcoal-gray hover:bg-golden-yellow/90 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 active:scale-95 transition-transform" onClick={() => navigate('/chat')}>
+            <Button size="lg" className="bg-golden-yellow text-[hsl(26_18%_14%)] hover:bg-golden-yellow/90 text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 active:scale-95 transition-transform" onClick={() => navigate('/chat')}>
               {t("obj.cta") || "Experience HOPEr Today"}
             </Button>
           </div>

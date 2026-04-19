@@ -3,6 +3,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { evaluateScore, MAX_SCORE, MOOD_QUESTIONS, MoodKey, MoodEvaluation } from "@/lib/mood-evaluator";
 import { useNavigate } from "react-router-dom";
+import { setWellnessContext } from "@/lib/wellnessContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const STORAGE_KEY = "hoper-mood-quiz-progress";
 
@@ -184,12 +186,16 @@ const ResultView = ({
   onSave,
   saving,
   onOpenChat,
+  t,
+  navigate,
 }: {
   result: MoodEvaluation;
   onRetake: () => void;
   onSave: () => Promise<void>;
   saving: boolean;
   onOpenChat: () => void;
+  t: (key: string) => string;
+  navigate: ReturnType<typeof useNavigate>;
 }) => (
   <div className="space-y-8" aria-live="polite">
     <style>{animationStyles}</style>
@@ -218,21 +224,47 @@ const ResultView = ({
 
     <div className="bg-soft-lavender/40 border border-deep-purple/20 rounded-2xl p-6 space-y-3">
       <h3 className="text-lg font-semibold text-deep-purple flex items-center gap-2">
-        Looking for a caring conversation?
+        {t("mood.result.chatTitle")}
       </h3>
-      <p className="text-charcoal-gray/90">
-        Our supportive chatbot is always available to listen, reflect, and share calming prompts tailored to how you're feeling. You can chat anonymously and step away whenever you need.
-      </p>
+      <p className="text-charcoal-gray/90">{t("mood.result.chatBody")}</p>
       <Button
         onClick={onOpenChat}
         className="inline-flex items-center gap-2 bg-deep-purple hover:bg-deep-purple/90"
       >
-        Talk to HOPEr now
+        {t("mood.result.chatCta")}
         <span aria-hidden="true">💬</span>
       </Button>
-      <p className="text-xs text-charcoal-gray/70">
-        HOPEr isn’t a substitute for professional care, but it can help you process emotions and discover next steps. If you’re in crisis, please reach out to a trusted person or local helpline right away.
-      </p>
+      <p className="text-xs text-charcoal-gray/70">{t("mood.result.chatDisclaimer")}</p>
+    </div>
+
+    <div className="rounded-2xl border border-deep-purple/15 bg-white/80 p-5 space-y-3">
+      <h3 className="text-base font-semibold text-charcoal-gray">{t("mood.result.toolsTitle")}</h3>
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+        <Button
+          type="button"
+          variant="outline"
+          className="h-auto min-h-[3rem] justify-center border-2 border-emerald-600/40 py-3 text-center text-sm font-semibold text-emerald-900 hover:bg-emerald-50"
+          onClick={() => navigate("/mindfulness?mode=breathing")}
+        >
+          {t("mood.btnBreathingShort")}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          className="h-auto min-h-[3rem] justify-center border-2 border-indigo-600/40 py-3 text-center text-sm font-semibold text-indigo-900 hover:bg-indigo-50"
+          onClick={() => navigate("/sleep?step=breathing")}
+        >
+          {t("mood.btnSleepShort")}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          className="h-auto min-h-[3rem] justify-center border-2 border-deep-purple/35 py-3 text-center text-sm font-semibold text-deep-purple hover:bg-soft-lavender/40"
+          onClick={() => navigate("/assessment")}
+        >
+          {t("mood.btnAssessmentShort")}
+        </Button>
+      </div>
     </div>
 
     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
@@ -252,6 +284,7 @@ const MoodQuiz = () => {
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const currentQuestion = MOOD_QUESTIONS[currentIndex];
   const allAnswered = answers.every((answer) => answer !== null);
@@ -357,7 +390,20 @@ const MoodQuiz = () => {
               onRetake={handleRetake}
               onSave={handleSave}
               saving={isSaving}
-              onOpenChat={() => navigate("/chat")}
+              t={t}
+              navigate={navigate}
+              onOpenChat={() => {
+                setWellnessContext({
+                  source: "mood-quiz",
+                  summary: `${t("mood.ctx.prefix")} ${result.moodLabel}`,
+                  moodLabel: result.moodLabel,
+                  moodKey: result.moodKey,
+                  savedAt: new Date().toISOString(),
+                });
+                navigate("/chat", {
+                  state: { initialMessage: t("chat.afterMoodChatSeed") },
+                });
+              }}
             />
           )}
 

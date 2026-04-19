@@ -38,7 +38,7 @@ const MeetHoper = () => {
   ];
 
   return (
-    <section id="meet-hoper" className="py-12 sm:py-16 md:py-20 px-4 bg-off-white">
+    <section id="meet-hoper" className="bg-off-white py-12 px-4 sm:px-6 sm:py-16 md:py-20">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-10 sm:mb-12 md:mb-16">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-deep-purple mb-3 sm:mb-4">
@@ -47,7 +47,7 @@ const MeetHoper = () => {
           <p className="text-xl sm:text-2xl font-bold text-golden-yellow mb-4 sm:mb-6">
             {t("meet.subtitle") || "A Safe, Empathetic AI Companion"}
           </p>
-          <p className="text-base sm:text-lg text-charcoal-gray max-w-4xl mx-auto px-4">
+          <p className="text-base sm:text-lg text-foreground/90 max-w-4xl mx-auto px-4">
             {t("meet.desc") || "HOPEr bridges the gap between student mental health needs and available support, providing immediate, safe, and therapeutically sound guidance whenever it's needed."}
           </p>
         </div>
@@ -69,19 +69,19 @@ const MeetHoper = () => {
               </video>
             </div>
           </div>
-          <p className="text-center text-xs sm:text-sm md:text-base text-charcoal-gray/80 mt-4 sm:mt-6 px-4">
+          <p className="text-center text-xs sm:text-sm md:text-base text-muted-foreground mt-4 sm:mt-6 px-4">
             {t("meet.videoDesc") || "Understanding the struggles students face and why we built an AI companion that truly cares"}
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {features.map((feature, index) => (
-            <div key={index} className="group bg-white border-2 border-deep-purple rounded-lg p-5 sm:p-6 lg:p-8 shadow-md hover:bg-deep-purple hover:scale-105 transition-all duration-300 cursor-pointer active:scale-95">
+            <div key={index} className="group cursor-pointer rounded-xl border border-border bg-card p-5 text-card-foreground shadow-sm transition-all duration-300 hover:scale-[1.02] hover:border-deep-purple/30 hover:bg-deep-purple hover:shadow-md active:scale-95 sm:p-6 lg:p-8">
               <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-golden-yellow bg-golden-yellow flex items-center justify-center mx-auto mb-4 sm:mb-6">
                 <feature.icon className="w-7 h-7 sm:w-8 sm:h-8 text-deep-purple" />
               </div>
-              <h3 className="text-lg sm:text-xl font-bold text-charcoal-gray mb-3 sm:mb-4 text-center group-hover:text-white">{feature.title}</h3>
-              <p className="text-sm sm:text-base text-charcoal-gray leading-relaxed text-center group-hover:text-white">{feature.description}</p>
+              <h3 className="text-lg sm:text-xl font-bold text-foreground mb-3 sm:mb-4 text-center group-hover:text-white">{feature.title}</h3>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed text-center group-hover:text-white">{feature.description}</p>
             </div>
           ))}
         </div>

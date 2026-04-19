@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Moon,
   Wind,
@@ -20,6 +20,11 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useLanguage } from "@/contexts/LanguageContext";
+import {
+  GuidedBreathing,
+  BREATHING_PATTERN_CONFIG,
+} from "@/components/GuidedBreathing";
+import { setWellnessContext } from "@/lib/wellnessContext";
 
 type Step =
   | "greeting"
@@ -29,17 +34,77 @@ type Step =
   | "checklist"
   | "close";
 
+function SleepScriptReveal({ text }: { text: string }) {
+  const sentences = useMemo(() => {
+    const parts = text
+      .split(/(?<=[.!?])\s+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+    return parts.length > 0 ? parts : [text];
+  }, [text]);
+  const [visible, setVisible] = useState(1);
+  useEffect(() => {
+    if (visible >= sentences.length) return;
+    const id = window.setTimeout(() => setVisible((v) => v + 1), 5200);
+    return () => window.clearTimeout(id);
+  }, [visible, sentences.length]);
+
+  return (
+    <div className="space-y-6 text-center">
+      <div className="text-6xl" aria-hidden>
+        📖
+      </div>
+      <div className="rounded-2xl border border-amber-200/60 bg-gradient-to-br from-amber-50 to-orange-50 p-6 text-left text-charcoal-gray/95 shadow-inner">
+        {sentences.slice(0, visible).map((line, i) => (
+          <p
+            key={i}
+            className="motion-reduce:animate-none animate-in fade-in slide-in-from-bottom-2 mb-4 text-base italic leading-relaxed duration-700 last:mb-0"
+          >
+            {line}
+          </p>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const Sleep = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useLanguage();
   const [currentStep, setCurrentStep] = useState<Step>("greeting");
   const [timeOfDay, setTimeOfDay] = useState<"day" | "evening">("day");
   const [completedSteps, setCompletedSteps] = useState<Step[]>([]);
+  const [breathingDone, setBreathingDone] = useState(false);
+  const urlStepApplied = useRef(false);
 
   useEffect(() => {
     const hour = new Date().getHours();
     setTimeOfDay(hour >= 18 || hour < 6 ? "evening" : "day");
   }, []);
+
+  useEffect(() => {
+    if (currentStep !== "breathing") setBreathingDone(false);
+  }, [currentStep]);
+
+  useEffect(() => {
+    if (urlStepApplied.current) return;
+    const raw = searchParams.get("step");
+    if (!raw) return;
+    const allowed: Step[] = [
+      "greeting",
+      "dimming",
+      "breathing",
+      "script",
+      "checklist",
+      "close",
+    ];
+    if (allowed.includes(raw as Step)) {
+      urlStepApplied.current = true;
+      setCurrentStep(raw as Step);
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
 
   const steps: Record<
     Step,
@@ -98,7 +163,6 @@ const Sleep = () => {
       setCompletedSteps([...completedSteps, currentStep]);
       setCurrentStep(stepOrder[currentIndex + 1]);
     } else {
-      // Finished
       navigate("/");
     }
   };
@@ -168,54 +232,64 @@ const Sleep = () => {
             </div>
           </div>
         );
-      case "breathing":
+      case "breathing": {
+        const cycleLabel = (n: number, total: number) => {
+          const fmt = t("mind.breath.cycleFmt");
+          if (fmt.includes("{0}"))
+            return fmt.replace("{0}", String(n)).replace("{1}", String(total));
+          return `Cycle ${n} / ${total}`;
+        };
+        const breathLabels = {
+          inhale: t("mind.breath.inhale"),
+          hold: t("mind.breath.hold"),
+          exhale: t("mind.breath.exhale"),
+          cycle: cycleLabel,
+          done: t("mind.breath.doneCta"),
+          skip: t("mind.breath.skip"),
+          reducedHint: t("mind.breath.reducedHint"),
+          inhaleHint: t("mind.breath.hint.inhale"),
+          holdHint: t("mind.breath.hint.hold"),
+          exhaleHint: t("mind.breath.hint.exhale"),
+        };
+        const sleepBreathCfg = BREATHING_PATTERN_CONFIG["relax-478"];
+        if (!breathingDone) {
+          return (
+            <div className="space-y-4">
+              <GuidedBreathing
+                pattern="relax-478"
+                cycles={sleepBreathCfg.defaultCycles}
+                labels={breathLabels}
+                tone="indigo"
+                rhythmLabel={t("sleep.breath.rhythm478")}
+                onComplete={() => setBreathingDone(true)}
+                onExit={() => setBreathingDone(true)}
+              />
+              <p className="text-center text-sm text-muted-foreground">
+                {t("sleep.breath.note")}
+              </p>
+            </div>
+          );
+        }
         return (
-          <div className="text-center space-y-6">
-            <div className="relative w-48 h-48 mx-auto">
-              <div className="absolute inset-0 rounded-full border-8 border-blue-300 animate-pulse"></div>
-              <div className="absolute inset-8 rounded-full border-6 border-blue-400 animate-pulse delay-300"></div>
-              <div className="absolute inset-16 rounded-full border-4 border-blue-500 animate-pulse delay-700"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-3xl font-bold text-charcoal-gray">
-                  4-7-8
-                </span>
-              </div>
-            </div>
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div className="bg-blue-100 rounded-xl p-4">
-                <div className="text-2xl font-bold text-blue-800">4</div>
-                <div className="text-sm">{t("common.inhale") || "Inhale"}</div>
-              </div>
-              <div className="bg-blue-200 rounded-xl p-4">
-                <div className="text-2xl font-bold text-blue-800">7</div>
-                <div className="text-sm">{t("common.hold") || "Hold"}</div>
-              </div>
-              <div className="bg-blue-300 rounded-xl p-4">
-                <div className="text-2xl font-bold text-blue-800">8</div>
-                <div className="text-sm">{t("common.exhale") || "Exhale"}</div>
-              </div>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              {t("sleep.breath.note") || "Repeat 4 cycles, breathing gently through your nose."}
+          <div className="space-y-4 text-center">
+            <p className="text-lg font-medium text-charcoal-gray">
+              {t("sleep.breath.afterTitle")}
             </p>
+            <p className="text-sm text-muted-foreground">{t("sleep.breath.afterHint")}</p>
           </div>
         );
+      }
       case "script":
         return (
-          <div className="text-center space-y-6">
-            <div className="text-6xl">📖</div>
-            <Card className="bg-gradient-to-br from-amber-50 to-orange-50 text-left p-6">
-              <p className="italic text-charcoal-gray/90">
-                "{t("sleep.script.content") || "Imagine yourself lying in a comfortable meadow. The sky is a deep, velvety blue, dotted with stars. You feel the soft grass beneath you, and a gentle breeze brushes your skin. With each breath, you let go of the day's worries, sinking deeper into relaxation..."}"
-              </p>
-              <p className="mt-4 text-sm text-muted-foreground">
-                {t("sleep.script.note") || "Continue reading at your own pace, or close your eyes and visualize."}
-              </p>
-            </Card>
+          <div className="space-y-6 text-center">
+            <SleepScriptReveal text={t("sleep.script.content")} />
+            <p className="text-sm text-muted-foreground">
+              {t("sleep.script.note") || "Continue reading at your own pace, or close your eyes and visualize."}
+            </p>
             <Button
               variant="outline"
-              onClick={() => navigate("/mindfulness")}
-              className="mt-4"
+              onClick={() => navigate("/mindfulness?mode=breathing")}
+              className="mt-2"
             >
               {t("sleep.btnMindfulnessMode") || "Try a guided meditation instead"}
             </Button>
@@ -260,14 +334,20 @@ const Sleep = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
-                  onClick={() =>
+                  onClick={() => {
+                    setWellnessContext({
+                      source: "sleep",
+                      summary: t("sleep.ctx.doneSummary"),
+                      savedAt: new Date().toISOString(),
+                    });
                     navigate("/chat", {
                       state: {
                         initialMessage:
-                          t("sleep.chatQuery") || "I just finished my sleep wind-down routine. Can we talk about sleep?",
+                          t("sleep.chatQuery") ||
+                          "I just finished my sleep wind-down routine. Can we talk about sleep?",
                       },
-                    })
-                  }
+                    });
+                  }}
                 >
                   {t("sleep.btnAskHoper") || "Ask HOPEr about sleep"}
                 </Button>

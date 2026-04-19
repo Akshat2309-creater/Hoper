@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Heart, Moon, Zap, MessageCircle, Wind, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { setWellnessContext } from "@/lib/wellnessContext";
 
 // ───────────────────────────────────────────────
 // Types
@@ -311,9 +312,17 @@ const ResultScreen = ({ result }: { result: AssessmentResult }) => {
   const getPrimaryAction = () => {
     const { needTag } = result;
     if (needTag === "Sleep better") {
-      return { label: t("assess.res.btnSleep") || "Sleep Wellness Mode", path: "/sleep", emoji: "🌙" };
+      return {
+        label: t("assess.res.btnSleep") || "Sleep Wellness Mode",
+        path: "/sleep?step=breathing",
+        emoji: "🌙",
+      };
     } else if (needTag === "Calm down") {
-      return { label: t("assess.res.btnMindfulness") || "Mindfulness Mode", path: "/mindfulness", emoji: "🧘" };
+      return {
+        label: t("assess.res.btnMindfulness") || "Mindfulness Mode",
+        path: "/mindfulness?mode=breathing&pattern=calm-446",
+        emoji: "🧘",
+      };
     } else {
       return { label: t("assess.res.btnChat") || "Talk to HOPEr", path: "/chat", emoji: "💬", message: chatMessage };
     }
@@ -362,6 +371,11 @@ const ResultScreen = ({ result }: { result: AssessmentResult }) => {
             id="assessment-primary-action"
             className="w-full h-14 text-base bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold rounded-2xl shadow-lg active:scale-[0.98] transition-all"
             onClick={() => {
+              setWellnessContext({
+                source: "assessment",
+                summary: `${card.label}. ${card.message}`.slice(0, 450),
+                savedAt: new Date().toISOString(),
+              });
               if (primary.message) {
                 navigate(primary.path, { state: { initialMessage: primary.message } });
               } else {
@@ -379,9 +393,14 @@ const ResultScreen = ({ result }: { result: AssessmentResult }) => {
               id="assessment-chat-action"
               variant="outline"
               className="w-full h-12 text-sm border-2 border-secondary/40 text-secondary hover:bg-secondary/10 rounded-2xl active:scale-[0.98] transition-all font-semibold"
-              onClick={() =>
-                navigate("/chat", { state: { initialMessage: chatMessage } })
-              }
+              onClick={() => {
+                setWellnessContext({
+                  source: "assessment",
+                  summary: chatMessage.slice(0, 450),
+                  savedAt: new Date().toISOString(),
+                });
+                navigate("/chat", { state: { initialMessage: chatMessage } });
+              }}
             >
               <MessageCircle className="w-4 h-4 mr-2" />
               {t("assess.res.btnChat") || "Talk to HOPEr"}

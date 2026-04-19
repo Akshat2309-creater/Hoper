@@ -58,6 +58,73 @@ All colors MUST be HSL.
     --ring: 43 90% 58%;
 
     --radius: 0.5rem;
+
+    /* Brand palette (Tailwind custom colors; matches defaults above) */
+    --golden-yellow: 43 90% 58%;
+    --deep-purple: 262 45% 50%;
+    --soft-lavender: 262 50% 80%;
+    --mint-green: 156 48% 80%;
+    --sky-blue: 196 67% 78%;
+    --off-white: 0 0% 98%;
+    --warm-gray: 0 0% 88%;
+    --charcoal-gray: 0 0% 20%;
+
+    --chat-surface: 0 0% 98%;
+    --chat-thread: 0 0% 96%;
+  }
+
+  .dark {
+    color-scheme: dark;
+
+    --primary: 43 88% 58%;
+    --primary-foreground: 258 35% 12%;
+
+    --secondary: 262 38% 42%;
+    --secondary-foreground: 48 20% 96%;
+
+    --lavender: 262 22% 38%;
+    --lavender-foreground: 48 25% 92%;
+
+    --mint: 156 18% 28%;
+    --mint-foreground: 156 40% 88%;
+
+    --sky: 197 28% 32%;
+    --sky-foreground: 197 45% 90%;
+
+    --background: 258 28% 10%;
+    --foreground: 48 22% 94%;
+
+    --muted: 258 18% 18%;
+    --muted-foreground: 258 12% 68%;
+
+    --accent: 258 20% 22%;
+    --accent-foreground: 48 20% 94%;
+
+    --card: 258 24% 13%;
+    --card-foreground: 48 22% 94%;
+
+    --popover: 258 26% 12%;
+    --popover-foreground: 48 22% 94%;
+
+    --destructive: 0 62% 48%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 258 18% 24%;
+    --input: 258 18% 24%;
+    --ring: 43 85% 55%;
+
+    --golden-yellow: 43 82% 56%;
+    --deep-purple: 262 58% 72%;
+    --soft-lavender: 262 22% 42%;
+    --mint-green: 156 22% 36%;
+    --sky-blue: 197 32% 44%;
+    --off-white: 258 22% 14%;
+    --warm-gray: 258 14% 26%;
+    --charcoal-gray: 48 12% 88%;
+
+    /* Match thread + composer column so the input row blends with messages */
+    --chat-surface: 258 22% 11%;
+    --chat-thread: 258 22% 11%;
   }
 }
 
@@ -67,7 +134,7 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground font-lato;
+    @apply bg-background text-foreground font-lato antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -81,5 +148,48 @@ All colors MUST be HSL.
   }
   50% {
     transform: translateY(-20px);
+  }
+}
+
+/* Chat route splash — subtle logo motion (does not affect global hero float) */
+@keyframes splash-logo-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes splash-dots {
+  0%,
+  80%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Guided breathing orb — keyframes avoid React transition batching bugs */
+@keyframes breathe-orb-grow {
+  from {
+    transform: scale(0.82);
+  }
+  to {
+    transform: scale(1.28);
+  }
+}
+
+@keyframes breathe-orb-shrink {
+  from {
+    transform: scale(1.28);
+  }
+  to {
+    transform: scale(0.82);
   }
 }
