@@ -18,8 +18,8 @@ from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional
 from dotenv import load_dotenv
 
 # Load environment variables FIRST, before any other imports that might need them
-# .env file is in the parent directory - load it with override=True to ensure it takes precedence
-env_path = Path(__file__).parent.parent / ".env"
+# .env file is in the same directory - load it with override=True to ensure it takes precedence
+env_path = Path(__file__).parent / ".env"
 load_dotenv(dotenv_path=env_path, override=True)
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware

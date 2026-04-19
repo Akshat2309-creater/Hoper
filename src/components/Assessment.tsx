@@ -543,6 +543,7 @@ const Assessment = () => {
         </div>
       </div>
     </div>
+    </div>
   );
 };
 
