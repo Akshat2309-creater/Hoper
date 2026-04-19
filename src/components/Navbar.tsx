@@ -1,31 +1,33 @@
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, LogOut, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { LanguageGlobeMenu } from "@/components/LanguageMenu";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
-
-interface NavbarProps {
-  onOpenChat?: () => void;
-}
-
-const SUPPORT_URL = "http://localhost:8504/";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { userInitials } from "@/lib/authStorage";
 
 const NAV_DROPDOWN_SIDE_OFFSET = 20;
 /** Explore menu sits lower than language — larger gap under nav */
 const EXPLORE_DROPDOWN_SIDE_OFFSET = 28;
 
-const Navbar = ({ onOpenChat }: NavbarProps) => {
+const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const { session, logout } = useAuth();
+  const initials = session
+    ? userInitials(session.displayName || "", session.username || "")
+    : "";
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -75,8 +77,9 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
     setMobileMenuOpen(false);
   };
 
-  const openSupportChat = () => {
-    window.open(SUPPORT_URL, "_blank", "noopener,noreferrer");
+  const goToChat = () => {
+    navigate("/chat");
+    setMobileMenuOpen(false);
   };
 
   const { setLanguage, t } = useLanguage();
@@ -167,7 +170,7 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
                 {contactLink.name}
               </button>
               <button
-                onClick={openSupportChat}
+                onClick={goToChat}
                 className="text-secondary-foreground hover:text-primary transition-colors duration-300 font-medium text-sm lg:text-base active:scale-95"
               >
                 {t("nav.chat")}
@@ -190,6 +193,48 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
                 itemClassName={navDropdownItemClasses}
               />
               <ThemeToggle />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    className="rounded-full ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    aria-label={t("nav.account")}
+                  >
+                    <Avatar className="h-9 w-9 border-2 border-primary/40">
+                      <AvatarFallback className="bg-primary/20 text-xs font-bold text-primary">
+                        {initials}
+                      </AvatarFallback>
+                    </Avatar>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-52" sideOffset={8}>
+                  <div className="px-2 py-1.5">
+                    <p className="truncate text-sm font-semibold text-foreground">
+                      {session?.displayName || session?.username}
+                    </p>
+                    <p className="truncate text-xs text-muted-foreground">{session?.email}</p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="cursor-pointer gap-2"
+                    onClick={() => navigate("/throwbacks")}
+                  >
+                    <Sparkles className="h-4 w-4 text-primary" />
+                    {t("nav.throwbacks")}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="cursor-pointer gap-2 text-destructive focus:text-destructive"
+                    onClick={() => {
+                      logout();
+                      navigate("/login");
+                    }}
+                  >
+                    <LogOut className="h-4 w-4" />
+                    {t("nav.signOut")}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
 
             {/* Mobile: language + menu */}
@@ -200,6 +245,52 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
                 itemClassName={navDropdownItemClasses}
               />
               <ThemeToggle />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    type="button"
+                    className="rounded-full p-0.5 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    aria-label={t("nav.account")}
+                  >
+                    <Avatar className="h-8 w-8 border-2 border-primary/40">
+                      <AvatarFallback className="bg-primary/20 text-[10px] font-bold text-primary">
+                        {initials}
+                      </AvatarFallback>
+                    </Avatar>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-52" sideOffset={8}>
+                  <div className="px-2 py-1.5">
+                    <p className="truncate text-sm font-semibold text-foreground">
+                      {session?.displayName || session?.username}
+                    </p>
+                    <p className="truncate text-xs text-muted-foreground">{session?.email}</p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="cursor-pointer gap-2"
+                    onClick={() => {
+                      navigate("/throwbacks");
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    <Sparkles className="h-4 w-4 text-primary" />
+                    {t("nav.throwbacks")}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="cursor-pointer gap-2 text-destructive focus:text-destructive"
+                    onClick={() => {
+                      logout();
+                      setMobileMenuOpen(false);
+                      navigate("/login");
+                    }}
+                  >
+                    <LogOut className="h-4 w-4" />
+                    {t("nav.signOut")}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
               <button
                 className="text-secondary-foreground p-2 active:scale-95 transition-transform"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -262,13 +353,20 @@ const Navbar = ({ onOpenChat }: NavbarProps) => {
               </button>
 
               <button
+                onClick={goToChat}
+                className="text-secondary-foreground hover:text-primary transition-colors duration-300 font-medium py-2 text-left text-base active:scale-95"
+              >
+                {t("nav.chat")}
+              </button>
+              <button
+                type="button"
                 onClick={() => {
-                  openSupportChat();
+                  navigate("/throwbacks");
                   setMobileMenuOpen(false);
                 }}
                 className="text-secondary-foreground hover:text-primary transition-colors duration-300 font-medium py-2 text-left text-base active:scale-95"
               >
-                {t("nav.chat")}
+                {t("nav.throwbacks")}
               </button>
               <Button
                 variant="navbar"

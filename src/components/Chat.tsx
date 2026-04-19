@@ -17,7 +17,9 @@ import {
   Heart,
   Leaf,
   Lightbulb,
+  Loader2,
   MessageCircle,
+  Mic,
   Moon,
   Send,
   Shield,
@@ -29,6 +31,10 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { logActivity, mergeUserContext } from "@/lib/authStorage";
+import { getApiBaseUrl, isApiBaseLikelyBlockedInBrowser } from "@/lib/apiBase";
+import { toast } from "@/components/ui/sonner";
 import { LanguageGlobeMenu } from "@/components/LanguageMenu";
 import {
   getWellnessContext,
@@ -255,6 +261,9 @@ function ChatComposer({
   inputRef,
   onIdeasClick,
   onSend,
+  isRecording,
+  isTranscribing,
+  onVoiceToggle,
   t,
 }: {
   inputValue: string;
@@ -264,6 +273,9 @@ function ChatComposer({
   inputRef?: React.RefObject<HTMLInputElement | null>;
   onIdeasClick: () => void;
   onSend: () => void;
+  isRecording: boolean;
+  isTranscribing: boolean;
+  onVoiceToggle: () => void;
   t: (key: string) => string;
 }) {
   return (
@@ -285,7 +297,7 @@ function ChatComposer({
                 t("chat.placeholder") ||
                 "Share what's on your mind... I'm here to listen and support you."
               }
-              disabled={isTyping}
+              disabled={isTyping || isTranscribing}
               ref={inputRef}
               className="min-h-[2.75rem] flex-1 rounded-xl border border-deep-purple/20 bg-[#F5EFE4] px-3 py-2 text-[15px] font-medium leading-relaxed text-foreground shadow-none placeholder:text-muted-foreground focus-visible:border-deep-purple/40 focus-visible:ring-1 focus-visible:ring-deep-purple/30 focus-visible:ring-offset-0 dark:border-deep-purple/30 dark:bg-chat-thread sm:min-h-[3rem] sm:text-base"
             />
@@ -293,16 +305,42 @@ function ChatComposer({
               type="button"
               variant="outline"
               size="icon"
+              className={`h-11 w-11 shrink-0 rounded-xl border-2 shadow-sm sm:h-12 sm:w-12 ${
+                isRecording
+                  ? "animate-pulse border-destructive/80 bg-destructive/15 text-destructive hover:bg-destructive/25"
+                  : "border-deep-purple/40 bg-soft-lavender/90 text-deep-purple hover:bg-soft-lavender"
+              }`}
+              aria-label={
+                isTranscribing
+                  ? t("chat.voiceTranscribing")
+                  : isRecording
+                    ? t("chat.voiceStop")
+                    : t("chat.voiceStart")
+              }
+              disabled={isTyping || isTranscribing}
+              onClick={onVoiceToggle}
+            >
+              {isTranscribing ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <Mic className="h-5 w-5" />
+              )}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
               className="h-11 w-11 shrink-0 rounded-xl border-2 border-deep-purple/40 bg-golden-yellow/90 text-deep-purple shadow-sm hover:bg-golden-yellow sm:h-12 sm:w-12"
               aria-label={t("chat.startersTitle")}
               onClick={onIdeasClick}
+              disabled={isTyping || isRecording || isTranscribing}
             >
               <Lightbulb className="h-5 w-5" />
             </Button>
             <Button
               type="button"
               onClick={onSend}
-              disabled={!inputValue.trim() || isTyping}
+              disabled={!inputValue.trim() || isTyping || isRecording || isTranscribing}
               className="h-11 min-w-[3rem] shrink-0 rounded-xl bg-secondary px-4 text-secondary-foreground shadow-md ring-2 ring-deep-purple/20 hover:bg-secondary/90 hover:ring-primary/50 disabled:opacity-40 sm:h-12 sm:min-w-[3.25rem]"
               aria-label={t("chat.send")}
             >
@@ -320,9 +358,16 @@ const chatLangMenuPanel =
 const chatLangMenuItem =
   "cursor-pointer rounded-md font-medium focus:bg-accent focus:text-accent-foreground data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground";
 
+function summarizeForThrowback(text: string, max = 140) {
+  const s = text.replace(/\s+/g, " ").trim();
+  if (s.length <= max) return s;
+  return `${s.slice(0, max - 1)}…`;
+}
+
 const Chat = ({ isOpen, onClose, initialMessage }: ChatProps) => {
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
+  const { session } = useAuth();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -339,6 +384,11 @@ const Chat = ({ isOpen, onClose, initialMessage }: ChatProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const hasProcessedInitialMessage = useRef(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const mediaChunksRef = useRef<Blob[]>([]);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
 
   // Conversation starter suggestions
   const conversationStarters = [
@@ -417,6 +467,14 @@ const Chat = ({ isOpen, onClose, initialMessage }: ChatProps) => {
     setWellnessBanner(getWellnessContext());
   }, []);
 
+  /** Welcome bubble was frozen from first mount; keep it in sync when user changes UI language. */
+  useEffect(() => {
+    setMessages((prev) => {
+      if (prev.length !== 1 || prev[0].id !== "1" || prev[0].isUser) return prev;
+      return [{ ...prev[0], content: t("chat.openingMessage") }];
+    });
+  }, [language, t]);
+
   // Scroll into view when input focuses (helps on mobile keyboards)
   useEffect(() => {
     const handler = () => {
@@ -433,8 +491,125 @@ const Chat = ({ isOpen, onClose, initialMessage }: ChatProps) => {
     };
   }, []);
 
+  const stopMediaStream = useCallback(() => {
+    mediaStreamRef.current?.getTracks().forEach((tr) => tr.stop());
+    mediaStreamRef.current = null;
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      try {
+        const mr = mediaRecorderRef.current;
+        if (mr && mr.state !== "inactive") mr.stop();
+      } catch {
+        /* ignore */
+      }
+      stopMediaStream();
+    };
+  }, [stopMediaStream]);
+
+  const transcribeBlob = useCallback(async (blob: Blob) => {
+    if (isApiBaseLikelyBlockedInBrowser()) {
+      throw new Error("MIXED_CONTENT");
+    }
+    const fd = new FormData();
+    const type = blob.type || "audio/webm";
+    const ext = type.includes("mp4") ? "mp4" : type.includes("webm") ? "webm" : "webm";
+    fd.append("file", blob, `recording.${ext}`);
+    const res = await fetch(`${getApiBaseUrl()}/transcribe`, { method: "POST", body: fd });
+    if (!res.ok) {
+      let detail = "";
+      try {
+        const j = (await res.json()) as { detail?: unknown };
+        detail = typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail ?? "");
+      } catch {
+        try {
+          detail = await res.text();
+        } catch {
+          detail = "";
+        }
+      }
+      throw new Error(detail || `HTTP ${res.status}`);
+    }
+    const data = (await res.json()) as { text?: string };
+    return (data.text || "").trim();
+  }, []);
+
+  const handleVoiceToggle = useCallback(() => {
+    if (isTyping || isTranscribing) return;
+
+    if (isRecording && mediaRecorderRef.current?.state === "recording") {
+      mediaRecorderRef.current.stop();
+      return;
+    }
+
+    void (async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaStreamRef.current = stream;
+        mediaChunksRef.current = [];
+
+        let mime = "";
+        if (typeof MediaRecorder !== "undefined") {
+          if (MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) mime = "audio/webm;codecs=opus";
+          else if (MediaRecorder.isTypeSupported("audio/webm")) mime = "audio/webm";
+          else if (MediaRecorder.isTypeSupported("audio/mp4")) mime = "audio/mp4";
+        }
+        const mr = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
+        mediaRecorderRef.current = mr;
+
+        mr.ondataavailable = (ev) => {
+          if (ev.data.size > 0) mediaChunksRef.current.push(ev.data);
+        };
+
+        mr.onstop = () => {
+          setIsRecording(false);
+          stopMediaStream();
+          const blob = new Blob(mediaChunksRef.current, { type: mr.mimeType || "audio/webm" });
+          mediaChunksRef.current = [];
+          mediaRecorderRef.current = null;
+          if (blob.size < 400) return;
+
+          void (async () => {
+            setIsTranscribing(true);
+            try {
+              const text = await transcribeBlob(blob);
+              if (text) {
+                setInputValue((prev) => {
+                  const p = prev.trimEnd();
+                  return p ? `${p} ${text}` : text;
+                });
+              }
+            } catch (e) {
+              console.error(e);
+              if (e instanceof Error && e.message === "MIXED_CONTENT") {
+                toast.error(t("chat.voiceBlockedMixedContent"));
+              } else {
+                toast.error(t("chat.voiceError"));
+              }
+            } finally {
+              setIsTranscribing(false);
+            }
+          })();
+        };
+
+        mr.start(400);
+        setIsRecording(true);
+      } catch (e) {
+        console.error(e);
+        toast.error(t("chat.voiceMicDenied"));
+      }
+    })();
+  }, [isRecording, isTranscribing, isTyping, stopMediaStream, transcribeBlob, t]);
+
   const getAIResponse = useCallback(
     async (input: string): Promise<{ content: string; sources?: string[] }> => {
+    if (isApiBaseLikelyBlockedInBrowser()) {
+      return {
+        content: t("chat.apiMixedContentHint"),
+        sources: undefined,
+      };
+    }
     try {
       const ctx = getWellnessContext();
       const prompt =
@@ -442,7 +617,7 @@ const Chat = ({ isOpen, onClose, initialMessage }: ChatProps) => {
           ? `${t("chat.contextPromptPrefix")}${ctx.summary.trim()}\n\nUser:\n${input}`
           : input;
 
-      const response = await fetch("http://localhost:8000/chat", {
+      const response = await fetch(`${getApiBaseUrl()}/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -503,6 +678,12 @@ const Chat = ({ isOpen, onClose, initialMessage }: ChatProps) => {
     setInputValue("");
     setIsTyping(true);
 
+    if (session) {
+      const line = summarizeForThrowback(messageToSend);
+      logActivity(session.userId, "chat", `You shared: ${line}`);
+      mergeUserContext(session.userId, { lastChatPreview: line });
+    }
+
     try {
       const response = await getAIResponse(messageToSend);
       const aiMessage: Message = {
@@ -527,7 +708,7 @@ const Chat = ({ isOpen, onClose, initialMessage }: ChatProps) => {
     } finally {
       setIsTyping(false);
     }
-  }, [inputValue, getAIResponse]);
+  }, [inputValue, getAIResponse, session]);
 
   useEffect(() => {
     if (!initialMessage || hasProcessedInitialMessage.current) return;
@@ -546,6 +727,7 @@ const Chat = ({ isOpen, onClose, initialMessage }: ChatProps) => {
   const handleComposerKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
+      if (isTyping || isRecording || isTranscribing) return;
       handleSendMessage();
     }
   };
@@ -737,6 +919,9 @@ const Chat = ({ isOpen, onClose, initialMessage }: ChatProps) => {
             inputRef={inputRef}
             onIdeasClick={() => setShowAllSuggestions(true)}
             onSend={() => handleSendMessage()}
+            isRecording={isRecording}
+            isTranscribing={isTranscribing}
+            onVoiceToggle={handleVoiceToggle}
             t={t}
           />
           </div>
@@ -892,6 +1077,9 @@ const Chat = ({ isOpen, onClose, initialMessage }: ChatProps) => {
                   isTyping={isTyping}
                   onIdeasClick={() => setShowAllSuggestions(false)}
                   onSend={() => handleSendMessage()}
+                  isRecording={isRecording}
+                  isTranscribing={isTranscribing}
+                  onVoiceToggle={handleVoiceToggle}
                   t={t}
                 />
                 </div>

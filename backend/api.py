@@ -11,17 +11,19 @@ Run:
 # -----------------------------
 # Imports
 # -----------------------------
+import io
 import os
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional
 
 from dotenv import load_dotenv
+from openai import OpenAI
 
 # Load environment variables FIRST, before any other imports that might need them
 # .env file is in the same directory - load it with override=True to ensure it takes precedence
 env_path = Path(__file__).parent / ".env"
 load_dotenv(dotenv_path=env_path, override=True)
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -87,6 +89,10 @@ class ChatResponse(BaseModel):
     answer: str
     used_rag: bool
     sources: Optional[List[Dict[str, str]]] = None
+
+
+class TranscribeResponse(BaseModel):
+    text: str
 
 
 # -----------------------------
@@ -358,6 +364,41 @@ async def root():
 async def health():
     """Health check endpoint."""
     return {"status": "healthy"}
+
+
+def _openai_client() -> OpenAI:
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise HTTPException(status_code=500, detail="OPENAI_API_KEY is not set")
+    return OpenAI(api_key=api_key.strip().strip('"'))
+
+
+@app.post("/transcribe", response_model=TranscribeResponse)
+async def transcribe(file: UploadFile = File(...)):
+    """
+    Speech-to-text via OpenAI Whisper. Send multipart form field `file` (e.g. webm from MediaRecorder).
+    """
+    raw = await file.read()
+    if len(raw) < 256:
+        raise HTTPException(status_code=400, detail="Audio too short or empty")
+    if len(raw) > 24 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="Audio file too large (max ~24MB)")
+
+    suffix = Path(file.filename or "recording.webm").suffix.lower()
+    if suffix not in (".webm", ".wav", ".mp3", ".m4a", ".mp4", ".mpeg", ".mpga", ".oga"):
+        suffix = ".webm"
+    buf = io.BytesIO(raw)
+    buf.name = f"audio{suffix}"
+
+    try:
+        client = _openai_client()
+        transcript = client.audio.transcriptions.create(model="whisper-1", file=buf)
+        text = (getattr(transcript, "text", None) or "").strip()
+        return TranscribeResponse(text=text)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Transcription failed: {e!s}") from e
 
 
 @app.post("/chat", response_model=ChatResponse)

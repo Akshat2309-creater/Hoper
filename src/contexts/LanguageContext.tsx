@@ -4,9 +4,18 @@ import React, {
   useState,
   ReactNode,
   useEffect,
+  useCallback,
+  useMemo,
 } from "react";
 
 export type Language = "en" | "hi" | "es" | "fr" | "ar";
+
+const SUPPORTED_LANGUAGES: readonly Language[] = ["en", "hi", "es", "fr", "ar"];
+
+function normalizeStoredLanguage(raw: string | null): Language {
+  if (raw && SUPPORTED_LANGUAGES.includes(raw as Language)) return raw as Language;
+  return "en";
+}
 
 interface LanguageContextType {
   language: Language;
@@ -36,6 +45,63 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.getStarted": "Start",
     "nav.switchLanguage": "Language",
     "nav.explore": "Explore",
+    "nav.throwbacks": "Throwbacks",
+    "nav.signOut": "Sign out",
+    "nav.account": "Account",
+    // Auth
+    "auth.title": "Welcome to HOPEr",
+    "auth.subtitle": "Sign in to continue your wellness journey.",
+    "auth.googleHint": "Quick sign-in with your Google account (optional).",
+    "auth.orEmail": "or continue with email",
+    "auth.email": "Email",
+    "auth.sendOtp": "Send verification code",
+    "auth.otpSent": "Enter the verification code (use “Show test code” if you need it — emails are not sent from this build yet).",
+    "auth.otpTo": "Enter the 6-digit code we generated for {0}",
+    "auth.demoOtp": "Your code:",
+    "auth.back": "Back",
+    "auth.verifyOtp": "Verify code",
+    "auth.existingWelcome": "Welcome back — enter your password to finish signing in.",
+    "auth.newWelcome": "Create your HOPEr profile.",
+    "auth.username": "Display name",
+    "auth.usernamePh": "How we greet you",
+    "auth.password": "Password",
+    "auth.passwordConfirm": "Confirm password",
+    "auth.signIn": "Sign in",
+    "auth.createAccount": "Create account",
+    "auth.welcome": "You're in. Take a breath — HOPEr is with you.",
+    "auth.disclaimer":
+      "Pilot sign-in: accounts and passwords stay in this browser only (localStorage). For a small trusted team only — not a replacement for secure server auth.",
+    "auth.noEmailSent":
+      "We do not send real emails from this app yet — there is no mail server hooked up. Use “Show test code” only on your own machine for this pilot.",
+    "auth.showTestCode": "Show test code",
+    "auth.hideTestCode": "Hide test code",
+    "auth.signInWithPassword": "Already have an account? Sign in with password",
+    "auth.useCodeInstead": "New here or prefer a code? Use email verification instead",
+    "auth.passwordOnlyTitle": "Sign in with your email and password (no code step).",
+    "auth.err.email": "Please enter a valid email.",
+    "auth.err.otp": "That code doesn't match or expired. Try again.",
+    "auth.err.no_account": "No account found for that email.",
+    "auth.err.bad_password": "Incorrect password.",
+    "auth.err.exists": "That email already has an account. Sign in with your password.",
+    "auth.err.passwordShort": "Use at least 8 characters for your password.",
+    "auth.err.passwordMatch": "Passwords don't match.",
+    "auth.err.use_password": "This email is set up with a password. Use email sign-in instead.",
+    "auth.err.google_email": "Google didn't return an email. Try another account.",
+    "auth.err.username": "Please enter a display name (at least 2 characters).",
+    "auth.err.not_allowed": "This app is restricted to an authorized account only.",
+    "auth.err.unauthorized_email": "Only the authorized HOPEr operator email can sign in.",
+    "auth.err.registration_disabled": "New accounts cannot be created.",
+    "auth.throw.title": "Throwbacks",
+    "auth.throw.subtitle": "A gentle recap of things you've shared here.",
+    "auth.throw.empty": "Nothing logged yet — say hi in chat and your moments will show up here.",
+    "auth.throw.back": "Back",
+    "auth.throw.type.chat": "Chat",
+    "auth.throw.type.assessment": "Check-in",
+    "auth.throw.type.sleep": "Sleep",
+    "auth.throw.type.mindfulness": "Mindfulness",
+    "auth.throw.type.mood": "Mood quiz",
+    "auth.throw.type.login": "Sign-in",
+    "auth.throw.type.other": "Activity",
     // Footer
     "footer.desc": "Supporting mental health awareness and providing resources for those in need.",
     "footer.quickLinks": "Quick Links",
@@ -263,7 +329,7 @@ const translations: Record<Language, Record<string, string>> = {
     "sleep.breath.rhythm478": "4 · 7 · 8",
     "sleep.breath.note": "Three slow 4‑7‑8 cycles — breathe gently through your nose if you can.",
     "sleep.breath.afterTitle": "Nice work — your body is a little calmer now.",
-    "sleep.breath.afterHint": "When you're ready, tap Continue for a soft wind‑down story.",
+    "sleep.breath.afterHint": "When you're ready, tap Continue for the body scan and story.",
     "sleep.ctx.doneSummary": "User completed the sleep wind-down flow and may want to discuss sleep or relaxation.",
     "sleep.script.title": "Calming sleep story",
     "sleep.script.desc": "Listen to a short guided relaxation script.",
@@ -300,9 +366,94 @@ const translations: Record<Language, Record<string, string>> = {
     "sleep.btnChat": "Chat with HOPEr",
     "sleep.chatQuery": "I just finished my sleep wind-down routine. Can we talk about sleep?",
     "sleep.footer": "Need more help with sleep?",
+    "sleep.ritual.title": "Your wind-down ritual",
+    "sleep.ritual.desc": "Pick a few tiny steps you can repeat tonight — small habits signal your brain that sleep is coming.",
+    "sleep.ritual.intro": "Tap the habits you want tonight (or skip — no pressure).",
+    "sleep.ritual.r1": "Dim lights in the room where I'll sleep",
+    "sleep.ritual.r2": "Put phone on the charger / out of reach",
+    "sleep.ritual.r3": "One glass of water, then bathroom",
+    "sleep.ritual.r4": "Brush teeth + wash face calmly",
+    "sleep.ritual.r5": "Lay out clothes or bag for tomorrow",
+    "sleep.ritual.r6": "Write one line on paper: “tomorrow can wait”",
+    "sleep.ritual.r7": "Gentle stretch or roll shoulders slowly",
+    "sleep.ritual.r8": "Open a window or lower room temperature slightly",
+    "sleep.ritual.hint": "{0} habits selected — you can change this any night.",
+    "sleep.ritual.skip": "Skip ritual",
+    "sleep.ritual.continue": "Continue",
+    "sleep.sound.title": "Sleep soundscape",
+    "sleep.sound.desc": "Soft sounds generated in your browser — pick one that feels calming.",
+    "sleep.sound.intro": "Tap a sound to play. You can keep it on for the rest of this flow — a mini player stays at the bottom.",
+    "sleep.sound.volume": "Volume",
+    "sleep.sound.stop": "Stop sound",
+    "sleep.sound.playing": "Playing",
+    "sleep.sound.disclaimer": "Synthetic ambience for relaxation only — not a medical device. Use comfortable volume.",
+    "sleep.sound.dockLabel": "Sleep ambience",
+    "sleep.sound.forest": "Forest night",
+    "sleep.sound.rain": "Rain",
+    "sleep.sound.ocean": "Ocean shore",
+    "sleep.sound.stream": "Stream / brook",
+    "sleep.sound.wind": "Soft wind",
+    "sleep.sound.fire": "Fire crackle",
+    "sleep.sound.night": "Quiet night",
+    "sleep.sound.white": "White noise",
+    "sleep.sound.pink": "Pink noise",
+    "sleep.sound.brown": "Brown noise",
+    "sleep.commit.title": "Night commitment",
+    "sleep.commit.desc": "One honest line and a tiny pause before you keep scrolling.",
+    "sleep.commit.lineLabel": "One line for tonight",
+    "sleep.commit.placeholder": "e.g. I’m allowed to rest even if today was messy.",
+    "sleep.commit.phone": "I’m moving my phone away from the bed for tonight.",
+    "sleep.commit.countIntro": "Optional: a 20-second quiet pause before you continue.",
+    "sleep.commit.startCount": "Start 20s pause",
+    "sleep.commit.countDone": "Gentle pause complete.",
+    "sleep.commit.continue": "Continue",
+    "sleep.body.title": "Body scan",
+    "sleep.body.desc": "Move attention slowly through your body — no forcing, just noticing.",
+    "sleep.body.step": "Step {0} of {1}",
+    "sleep.body.hint": "Breathe normally. If your mind wanders, gently return to the words.",
+    "sleep.body.back": "Back",
+    "sleep.body.next": "Next area",
+    "sleep.body.finish": "Finish scan",
+    "sleep.body.z1": "Notice your feet — heels, arches, toes. Let them feel heavy against the bed.",
+    "sleep.body.z2": "Lower legs and knees — soft, supported, nothing to fix right now.",
+    "sleep.body.z3": "Hips and belly — let the breath move gently without judging the day.",
+    "sleep.body.z4": "Chest and upper back — each exhale a little softer than the last.",
+    "sleep.body.z5": "Shoulders, arms, hands — unclench slowly, fingers loose.",
+    "sleep.body.z6": "Neck, jaw, forehead — smooth out the brow; the room can wait until morning.",
+    "sleep.story.title": "Choose-your-calm story",
+    "sleep.story.desc": "A tiny interactive wind-down — tap what feels soothing.",
+    "sleep.story.n0": "You’re on the last train home. Lights are low. Where does your mind drift first?",
+    "sleep.story.n0.train": "Watch lights slip past the window",
+    "sleep.story.n0.library": "Imagine a quiet library after closing",
+    "sleep.story.n1": "The window rhythm steadies you — seat, warmth, gentle sway. The day becomes a blur outside.",
+    "sleep.story.n1.next": "Continue",
+    "sleep.story.n2": "Shelves of books breathe dust and paper. No tasks here — only slow pages and soft carpet.",
+    "sleep.story.n2.next": "Continue",
+    "sleep.story.n3": "You find a nook with a blanket. Do you look out or tuck in?",
+    "sleep.story.n3.window": "A thin moon over rooftops",
+    "sleep.story.n3.blanket": "Pull the blanket to your chin",
+    "sleep.story.n4": "Whatever you chose, the world narrows to warmth and weight. Let the next breath be a little longer leaving than arriving. Sweet drift.",
+    "sleep.story.done": "Close the story",
+    "sleep.diary.title": "One line before bed",
+    "sleep.diary.desc": "Optional — a single line stays on this device unless you share it.",
+    "sleep.diary.intro": "How heavy did today feel? (optional) Then one line if you want.",
+    "sleep.diary.mood": "Mood weight (1 = light, 5 = heavy)",
+    "sleep.diary.line": "One line (optional)",
+    "sleep.diary.placeholder": "I’m proud I… / I’m letting go of…",
+    "sleep.diary.skip": "Skip diary",
+    "sleep.diary.save": "Save & continue",
     // Chat
     "chat.placeholder": "Type your message here...",
     "chat.send": "Send",
+    "chat.voiceStart": "Record voice",
+    "chat.voiceStop": "Stop and transcribe",
+    "chat.voiceTranscribing": "Transcribing…",
+    "chat.voiceError": "Could not transcribe audio. Check your connection and API.",
+    "chat.voiceMicDenied": "Microphone access was blocked. Allow the mic for this site in your browser settings.",
+    "chat.voiceBlockedMixedContent":
+      "Voice and chat cannot reach the API: this page is HTTPS but the app is still pointing at a non-HTTPS API (often localhost). Set VITE_API_BASE_URL to your deployed API (https://…) and rebuild.",
+    "chat.apiMixedContentHint":
+      "Chat cannot reach the server from this HTTPS page. Set VITE_API_BASE_URL to your API’s https:// address and redeploy the frontend.",
     "chat.openingMessage": "Hi — I'm glad you're here. What's on your mind today?",
     "chat.thinking": "HOPEr is thinking...",
     "chat.splashPreparing": "Almost ready…",
@@ -1362,19 +1513,25 @@ const translations: Record<Language, Record<string, string>> = {
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<Language>(() => {
     const saved = localStorage.getItem("hoper_language");
-    return (saved as Language) || "en";
+    return normalizeStoredLanguage(saved);
   });
 
   useEffect(() => {
     localStorage.setItem("hoper_language", language);
   }, [language]);
 
-  const t = (key: string): string => {
-    return translations[language]?.[key] || translations["en"][key] || key;
-  };
+  const t = useCallback(
+    (key: string): string => translations[language]?.[key] || translations["en"][key] || key,
+    [language]
+  );
+
+  const contextValue = useMemo(
+    () => ({ language, setLanguage, t }),
+    [language, setLanguage, t]
+  );
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={contextValue}>
       {children}
     </LanguageContext.Provider>
   );
