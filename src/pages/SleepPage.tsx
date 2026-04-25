@@ -2,7 +2,7 @@ import Sleep from "@/components/Sleep";
 
 const SleepPage = () => {
   return (
-    <div className="h-screen overflow-hidden">
+    <div className="min-h-screen overflow-y-auto overflow-x-hidden">
       <Sleep />
     </div>
   );
