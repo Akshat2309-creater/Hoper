@@ -16,8 +16,12 @@ import os
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional
 
+# Prevent transformers from importing heavy Torch runtime on Windows during startup.
+os.environ.setdefault("USE_TORCH", "0")
+
 from dotenv import load_dotenv
 from openai import OpenAI
+from pypdf import PdfReader
 
 # Load environment variables FIRST, before any other imports that might need them
 # .env file is in the same directory - load it with override=True to ensure it takes precedence
@@ -27,10 +31,8 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-# LangChain split packages
-from langchain_community.document_loaders import DirectoryLoader, PyPDFLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
+from langchain_core.documents import Document
 
 # Pinecone
 from pinecone.grpc import PineconeGRPC as Pinecone
@@ -112,30 +114,51 @@ def find_data_dir() -> str:
     )
 
 
-def iter_pdf_documents(data_dir: str) -> Iterator:
-    """Yield PDF Documents lazily so we don't reload everything repeatedly."""
-    loader = DirectoryLoader(data_dir, glob="*.pdf", loader_cls=PyPDFLoader)
-    yield from loader.lazy_load()
-
-
-def build_splitter() -> RecursiveCharacterTextSplitter:
-    return RecursiveCharacterTextSplitter(
-        chunk_size=CHUNK_SIZE,
-        chunk_overlap=CHUNK_OVERLAP,
-    )
+def iter_pdf_documents(data_dir: str) -> Iterator[Document]:
+    """Yield one Document per PDF page (lazy)."""
+    pdf_paths = sorted(Path(data_dir).glob("*.pdf"))
+    for pdf_path in pdf_paths:
+        reader = PdfReader(str(pdf_path))
+        for page_idx, page in enumerate(reader.pages):
+            text = (page.extract_text() or "").strip()
+            if not text:
+                continue
+            yield Document(
+                page_content=text,
+                metadata={"source": str(pdf_path), "page": page_idx + 1},
+            )
 
 
 def iter_chunk_batches(
-    docs: Iterable,
+    docs: Iterable[Document],
     batch_size: int = 32,
-    splitter: Optional[RecursiveCharacterTextSplitter] = None,
-) -> Iterator[List]:
-    """Split docs and yield batches of chunks to keep processing responsive."""
-    splitter = splitter or build_splitter()
-    buffer: List = []
+    chunk_size: int = CHUNK_SIZE,
+    chunk_overlap: int = CHUNK_OVERLAP,
+) -> Iterator[List[Document]]:
+    """Split docs with a simple overlap strategy and yield chunk batches."""
+    if chunk_size <= 0:
+        raise ValueError("chunk_size must be > 0")
+    if chunk_overlap < 0:
+        raise ValueError("chunk_overlap must be >= 0")
+    if chunk_overlap >= chunk_size:
+        raise ValueError("chunk_overlap must be smaller than chunk_size")
+
+    step = chunk_size - chunk_overlap
+    buffer: List[Document] = []
 
     for doc in docs:
-        for chunk in splitter.split_documents([doc]):
+        text = (doc.page_content or "").strip()
+        if not text:
+            continue
+
+        for start in range(0, len(text), step):
+            chunk_text = text[start:start + chunk_size].strip()
+            if not chunk_text:
+                continue
+
+            meta = dict(doc.metadata or {})
+            meta["chunk_start"] = start
+            chunk = Document(page_content=chunk_text, metadata=meta)
             buffer.append(chunk)
             if len(buffer) >= batch_size:
                 yield buffer
@@ -146,7 +169,10 @@ def iter_chunk_batches(
 
 
 def get_embeddings():
-    return OpenAIEmbeddings(model=EMBED_MODEL)
+    openai_api_key = os.getenv("OPENAI_API_KEY", "").strip().strip('"')
+    if not openai_api_key:
+        raise RuntimeError("OPENAI_API_KEY is not set. Put it in backend/.env.")
+    return OpenAIEmbeddings(model=EMBED_MODEL, api_key=openai_api_key)
 
 
 def get_pinecone_client() -> Pinecone:
@@ -185,13 +211,13 @@ def rebuild_index_from_pdfs(
     )
     vectorstore.delete(delete_all=True)
 
-    splitter = build_splitter()
     total_chunks = 0
 
     for chunk_batch in iter_chunk_batches(
         iter_pdf_documents(data_dir),
         batch_size=batch_size,
-        splitter=splitter,
+        chunk_size=CHUNK_SIZE,
+        chunk_overlap=CHUNK_OVERLAP,
     ):
         vectorstore.add_documents(chunk_batch)
         total_chunks += len(chunk_batch)
@@ -323,9 +349,14 @@ def bootstrap_pipeline(k_top: int = K_TOP):
     )
 
     # Build LLM without artificial output cap
+    openai_api_key = os.getenv("OPENAI_API_KEY", "").strip().strip('"')
+    if not openai_api_key:
+        raise RuntimeError("OPENAI_API_KEY is not set. Put it in backend/.env.")
+
     llm_kwargs = {
         "model": OPENAI_MODEL,
         "temperature": TEMPERATURE,
+        "api_key": openai_api_key,
     }
     # Only set max_tokens if you WANT a cap; by default we omit it
     if MAX_TOKENS is not None:
@@ -341,14 +372,15 @@ def bootstrap_pipeline(k_top: int = K_TOP):
 
 @app.on_event("startup")
 async def startup_event():
-    """Initialize the pipeline on startup."""
-    # Environment variables already loaded at module level
+    """Warm up pipeline if keys exist; never block API boot."""
+    # Environment variables are loaded at module level.
     try:
         bootstrap_pipeline()
         print("HOPEr API initialized successfully")
     except Exception as e:
-        print(f"Error initializing HOPEr API: {e}")
-        raise
+        # Keep server alive so /health and diagnostics still work, and
+        # chat endpoint can return a clear 500 with missing-config details.
+        print(f"Startup warmup skipped: {e}")
 
 
 @app.get("/")
@@ -496,9 +528,14 @@ async def reindex():
             search_kwargs={"k": K_TOP}
         )
         
+        openai_api_key = os.getenv("OPENAI_API_KEY", "").strip().strip('"')
+        if not openai_api_key:
+            raise RuntimeError("OPENAI_API_KEY is not set. Put it in backend/.env.")
+
         llm_kwargs = {
             "model": OPENAI_MODEL,
             "temperature": TEMPERATURE,
+            "api_key": openai_api_key,
         }
         if MAX_TOKENS is not None:
             llm_kwargs["max_tokens"] = MAX_TOKENS
