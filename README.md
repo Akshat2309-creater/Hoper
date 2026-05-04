@@ -77,66 +77,176 @@ This architecture ensures that every user query is contextually mapped, semantic
 | **Database**       | Pinecone Vector Database for semantic retrieval and contextual matching  |
 | **Knowledge Base** | Extracted and processed from verified mental health PDFs and resources   |
 
-## Team Members
+## Key Features
 
-| Name               | Role                                      | Description                                                                                                                                                                       |
-| ------------------ | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Anmol Pandey**   | Frontend Developer                        | Leads frontend development using ReactJS and Tailwind. Designs and implements intuitive UI components for chat, quizzes, and navigation ensuring smooth, responsive interactions. |
-| **Akshat Verma**   | Backend Developer                         | Builds and manages the FastAPI backend, connecting LangChain modules with Pinecone and OpenAI APIs. Ensures fast, reliable, and secure response handling between AI and frontend. |
-| **Jiraj Pandey**   | UI/UX Designer                            | Designs emotionally engaging and user-friendly layouts with focus on mental calmness. Shapes color palette, typography, and interactive flows aligned with user empathy.          |
-| **Shalini Pandey** | Data Extraction & Knowledge Base Engineer | Handles PDF data extraction, chunking, and embedding generation for the knowledge base. Ensures high-quality, relevant, and contextual information storage in Pinecone.           |
+- **Mood Check-in:** "Know Your Mood" quiz with adaptive results.
+- **Empathetic Chatbot:** Emotion-aware AI assistant using LangChain + GPT.
+- **RAG Pipeline:** Retrieves the most relevant, verified knowledge from vector databases.
+- **Calming UI/UX:** Designed for comfort and focus during emotional stress.
+- **Secure & Private:** No personal data collection — conversations stay confidential.
 
----
+## Setup and Installation
 
-This project is developed as part of a final year academic submission. For any queries, refer to the team members listed above.
+This guide is for setting up HOPEr locally for development or evaluation.
 
-This project is developed as part of a final year academic submission. For any queries, refer to the team members listed above.
+### Prerequisites
 
----
+- Node.js 18+ and npm
+- Python 3.10+ (3.11/3.12 recommended)
+- Git
 
-## 🌈 Key Features
+### Cloning the Repository
 
-- 🧭 **Mood Check-in:** “Know Your Mood” quiz with adaptive results.
-- 💬 **Empathetic Chatbot:** Emotion-aware AI assistant using LangChain + GPT.
-- 🧩 **RAG Pipeline:** Retrieves the most relevant, verified knowledge from vector databases.
-- 🎨 **Calming UI/UX:** Designed for comfort and focus during emotional stress.
-- 🔒 **Secure & Private:** No personal data collection — conversations stay confidential.
+```bash
+git clone https://github.com/Akshat2309-creater/Hoper
+cd Hoper
+```
 
----
+### Repository Structure
 
-## ⚡ Usage Instructions
+- Frontend app: `src`
+- Backend API: `backend`
 
-1. **Clone the repository:**
+### Backend Setup
+
+1. Navigate to the backend directory:
+
    ```bash
-   git clone https://github.com/04anmol/codeScarab_hackCBS8.0
-   cd hoper_hackcbs8-main
+   cd backend
    ```
-2. **Install dependencies:**
+
+2. Create and activate a virtual environment:
+
+   ```bash
+   python -m venv venv
+   # On Windows:
+   .\venv\Scripts\activate
+   # On macOS/Linux:
+   source venv/bin/activate
+   ```
+
+3. Install dependencies:
+
+   ```bash
+   pip install --upgrade pip
+   pip install -r requirements.txt
+   pip install python-multipart
+   ```
+
+4. Create environment file:
+   Create `backend/.env` with the required keys (obtain from project administrator):
+
+   ```
+   OPENAI_API_KEY="your_openai_api_key"
+   PINECONE_API_KEY="your_pinecone_api_key"
+   ```
+
+5. Start the backend server:
+
+   ```bash
+   uvicorn api:app --host 0.0.0.0 --port 8000 --reload
+   ```
+
+6. Verify backend is running:
+   - Visit [http://localhost:8000/health](http://localhost:8000/health)
+   - Expected response: `{"status":"healthy"}`
+
+### Frontend Setup
+
+1. In a new terminal, navigate to the frontend directory:
+
+   ```bash
+   cd src
+   ```
+
+2. Install dependencies:
+
    ```bash
    npm install
+   ```
+
+3. Start the development server:
+
+   ```bash
    npm run dev
    ```
-3. **streamlit run "Practice Set for Langchain/Hoper/pdfstuff.py"**
 
-## 🌍 Impact
+4. For production deployment, create `src/.env` from `src/.env.example` and set:
+   ```
+   VITE_API_BASE_URL=https://your-backend-domain
+   ```
+   Note: For HTTPS frontend, the backend must also be HTTPS to avoid mixed-content errors.
 
-- Promotes **mental wellness and emotional awareness** among youth.
-- Offers an **AI-driven safe space** for individuals to express emotions.
-- Encourages **early-stage intervention** and self-reflection.
-- Bridges the gap between **technology and empathy** for societal good.
+### Quick Start
 
-## 🧩 Future Enhancements
+Terminal 1 (Backend):
 
-- 🎯 Integration of **sentiment-based voice responses** for enhanced interaction.
-- 🧘 Addition of **guided breathing and relaxation modules**.
-- 🩵 Building a **community support forum** for peer-to-peer empathy.
-- 🌐 Multilingual support for broader accessibility.
+```bash
+cd backend
+python -m venv venv
+# Activate venv as above
+pip install -r requirements.txt
+pip install python-multipart
+# Create .env with API keys
+uvicorn api:app --host 0.0.0.0 --port 8000 --reload
+```
 
-## 💎 Why HOPEr?
+Terminal 2 (Frontend):
 
-- Combines **Retrieval-Augmented Generation (RAG)** with **empathetic NLP**.
+```bash
+cd src
+npm install
+npm run dev
+```
+
+## Troubleshooting
+
+### Backend Issues
+
+- **Error loading ASGI app / Could not import module "api"**
+  - Ensure running from `backend` directory.
+  - Check Python dependencies are installed.
+  - Verify `backend/.env` exists with required keys.
+  - Test import: `python -c "import api; print('api import ok')"`
+
+### Frontend Issues
+
+- **Chat loads but no assistant response**
+  - Confirm backend is running and accessible.
+  - Check `VITE_API_BASE_URL` points to correct backend URL.
+  - Ensure backend URL is HTTPS in production.
+
+## Deployment Checklist
+
+- Backend secrets provisioned securely (OPENAI_API_KEY, PINECONE_API_KEY).
+- Frontend environment set (VITE_API_BASE_URL to HTTPS backend).
+- Backend exposes /health and /chat endpoints.
+- CORS/network policy allows frontend to call backend.
+- No secrets committed in Git history.
+
+## Impact
+
+- Promotes mental wellness and emotional awareness among youth.
+- Offers an AI-driven safe space for individuals to express emotions.
+- Encourages early-stage intervention and self-reflection.
+- Bridges the gap between technology and empathy for societal good.
+
+## Future Enhancements
+
+- Integration of sentiment-based voice responses.
+- Guided breathing and relaxation modules.
+- Community support forum for peer-to-peer empathy.
+- Multilingual support for broader accessibility.
+
+## Why HOPEr?
+
+- Combines Retrieval-Augmented Generation (RAG) with empathetic NLP.
 - Simple, secure, and user-friendly design for mental health support.
-- Built with **purpose, empathy, and precision** — not just technology.
-- Designed to **listen first**, then respond with compassion.
+- Built with purpose, empathy, and precision — not just technology.
+- Designed to listen first, then respond with compassion.
 
-**💛 “Your mental health matters — You are not alone.”**
+"Your mental health matters — You are not alone."
+
+---
+
+This project is developed as part of a final year academic submission. For any queries, refer to the team members listed above.
