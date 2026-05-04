@@ -1,66 +1,73 @@
-# 💫 HOPEr – Mental Health Support Platform
+# HOPEr - An AI Companion for Mental Well-being
 
-> 🔖 **Checkpoint v1.0** — `2026-04-16`
-> This commit marks the stable baseline of the project **before** any new feature development begins.
-> Safe revert point: all 5 planned features (Multilingual, Mindfulness Mode, Sleep Mode, State Assessment, Personalized Pathways) are yet to be implemented.
-> Branch strategy: each feature will be developed on its own branch and merged into `main` only upon completion.
+**In partial fulfillment of the requirements**  
+**for the degree of**  
+**BACHELOR OF TECHNOLOGY**  
+**in**  
+**COMPUTER SCIENCE AND ENGINEERING**
 
+**Submitted by**
 
+- Akshat R. Tripathi (2204921530010)
+- Akshat Verma (2204921530011)
+- Anmol Pandey (2204921530023)
+- Abhay Pratap Singh Shakya (2204921530002)
 
-HOPEr is an AI-powered mental health companion designed to provide **emotional support, awareness, and guidance** through empathetic conversations.  
-It helps students and individuals manage **stress, anxiety, burnout, and emotional imbalance** by combining human-like understanding with smart, data-driven insights.
+**Under Supervision of**  
+**Ms. Pragati Upadhyay**
+
+**Department of Computer Science and Engineering**  
+**KCC Institute of Technology and Management**  
+**Dr. A. P. J. Abdul Kalam Technical University, Lucknow**
+
+**May, 2026**
 
 ---
 
-## 🧠 About the Project
+This repository contains the complete codebase for HOPEr, an AI-powered mental health companion platform.
 
-HOPEr acts as a **virtual mental wellness assistant**, empowering users to track their mood, express emotions freely, and receive tailored suggestions and responses — all while ensuring privacy and authenticity.  
-It uses **LangChain**, **FastAPI**, and **Pinecone Vector Databases** to retrieve meaningful, evidence-based content in real time and present it through an intuitive, calming interface.
+## Overview
 
-📄 **Presentation:** [View Google Slides](https://docs.google.com/presentation/d/1EU21qgEkFCaWVA2_XrjrfKBD-Rxx9M5FrGIt6cTblyg/edit?usp=sharing)
+HOPEr is an AI-powered mental health companion designed to provide emotional support, awareness, and guidance through empathetic conversations. It helps students and individuals manage stress, anxiety, burnout, and emotional imbalance by combining human-like understanding with smart, data-driven insights.
 
----
+The platform acts as a virtual mental wellness assistant, empowering users to track their mood, express emotions freely, and receive tailored suggestions and responses — all while ensuring privacy and authenticity. It uses LangChain, FastAPI, and Pinecone Vector Databases to retrieve meaningful, evidence-based content in real time and present it through an intuitive, calming interface.
 
-## 💡 The Problem It Solves
+**Presentation:** [View Google Slides](https://docs.google.com/presentation/d/1Hv-E81I20iZz368yORsaNkeWFaXYYuOE/edit?usp=sharing&ouid=116054875621763352488&rtpof=true&sd=true)
 
-Mental health issues like **stress, depression, and anxiety** are increasing rapidly among youth, but access to professional help remains limited due to:
+## Problem Statement
+
+Mental health issues like stress, depression, and anxiety are increasing rapidly among youth, but access to professional help remains limited due to:
 
 - Lack of awareness and stigma surrounding mental health.
 - Limited availability of affordable, immediate counseling support.
 - Hesitation to open up or seek help in person.
 - Overload of information online without credible guidance.
 
-💛 **HOPEr bridges this gap** by offering:
+HOPEr bridges this gap by offering:
 
-- A **non-judgmental AI companion** that listens and responds empathetically.
-- **24×7 personalized guidance** powered by verified knowledge bases.
-- A safe space for individuals to **self-assess and express emotions** privately.
-- Real-time **AI-assisted responses** to provide comfort and clarity.
+- A non-judgmental AI companion that listens and responds empathetically.
+- 24×7 personalized guidance powered by verified knowledge bases.
+- A safe space for individuals to self-assess and express emotions privately.
+- Real-time AI-assisted responses to provide comfort and clarity.
 
----
-
-## 🧭 Use Cases
+## Use Cases
 
 | Scenario                                  | How HOPEr Helps                                                                     |
 | ----------------------------------------- | ----------------------------------------------------------------------------------- |
 | **Student facing academic stress**        | Provides motivational and mindful coping suggestions through chat.                  |
 | **Someone feeling anxious or isolated**   | Engages empathetically using emotional tone detection and supportive prompts.       |
-| **Users seeking self-awareness**          | Guides users through the “Know Your Mood” quiz to understand their emotional state. |
+| **Users seeking self-awareness**          | Guides users through the "Know Your Mood" quiz to understand their emotional state. |
 | **Therapy support companion**             | Acts as a non-replacement but effective first step before professional help.        |
 | **Corporate or institutional deployment** | Can be integrated for employees or students to encourage mental wellness check-ins. |
 
----
-
-## ⚙️ System Architecture
+## System Architecture
 
 **PDF → Text Extraction → Chunking → Embeddings → Pinecone DB  
 User Query → FastAPI → Pinecone → Retrieve Context → OpenAI LLM → Response → Frontend**
 
-This architecture ensures that every user query is **contextually mapped**, **semantically understood**, and **emotionally aligned** before being presented as a helpful response.
+This architecture ensures that every user query is contextually mapped, semantically understood, and emotionally aligned before being presented as a helpful response.
 
----
-
-## 🚀 Core Technologies
+## Core Technologies
 
 | Stack              | Description                                                              |
 | ------------------ | ------------------------------------------------------------------------ |
@@ -70,16 +77,20 @@ This architecture ensures that every user query is **contextually mapped**, **se
 | **Database**       | Pinecone Vector Database for semantic retrieval and contextual matching  |
 | **Knowledge Base** | Extracted and processed from verified mental health PDFs and resources   |
 
+## Team Members
+
+| Name               | Role                                      | Description                                                                                                                                                                       |
+| ------------------ | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Anmol Pandey**   | Frontend Developer                        | Leads frontend development using ReactJS and Tailwind. Designs and implements intuitive UI components for chat, quizzes, and navigation ensuring smooth, responsive interactions. |
+| **Akshat Verma**   | Backend Developer                         | Builds and manages the FastAPI backend, connecting LangChain modules with Pinecone and OpenAI APIs. Ensures fast, reliable, and secure response handling between AI and frontend. |
+| **Jiraj Pandey**   | UI/UX Designer                            | Designs emotionally engaging and user-friendly layouts with focus on mental calmness. Shapes color palette, typography, and interactive flows aligned with user empathy.          |
+| **Shalini Pandey** | Data Extraction & Knowledge Base Engineer | Handles PDF data extraction, chunking, and embedding generation for the knowledge base. Ensures high-quality, relevant, and contextual information storage in Pinecone.           |
+
 ---
 
-## 👩‍💻 Team Members
+This project is developed as part of a final year academic submission. For any queries, refer to the team members listed above.
 
-| Name               | Role                                        | Description                                                                                                                                                                       |
-| ------------------ | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Anmol Pandey**   | _Frontend Developer_                        | Leads frontend development using ReactJS and Tailwind. Designs and implements intuitive UI components for chat, quizzes, and navigation ensuring smooth, responsive interactions. |
-| **Akshat Verma**   | _Backend Developer_                         | Builds and manages the FastAPI backend, connecting LangChain modules with Pinecone and OpenAI APIs. Ensures fast, reliable, and secure response handling between AI and frontend. |
-| **Jiraj Pandey**   | _UI/UX Designer_                            | Designs emotionally engaging and user-friendly layouts with focus on mental calmness. Shapes color palette, typography, and interactive flows aligned with user empathy.          |
-| **Shalini Pandey** | _Data Extraction & Knowledge Base Engineer_ | Handles PDF data extraction, chunking, and embedding generation for the knowledge base. Ensures high-quality, relevant, and contextual information storage in Pinecone.           |
+This project is developed as part of a final year academic submission. For any queries, refer to the team members listed above.
 
 ---
 
