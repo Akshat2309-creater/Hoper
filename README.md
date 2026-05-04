@@ -1,17 +1,13 @@
 # HOPEr - An AI Companion for Mental Well-being
 
-**In partial fulfillment of the requirements**  
-**for the degree of**  
-**BACHELOR OF TECHNOLOGY**  
-**in**  
-**COMPUTER SCIENCE AND ENGINEERING**
+<div align="center">
 
 **Submitted by**
 
-- Akshat R. Tripathi (2204921530010)
-- Akshat Verma (2204921530011)
-- Anmol Pandey (2204921530023)
-- Abhay Pratap Singh Shakya (2204921530002)
+Akshat R. Tripathi (2204921530010)  
+Akshat Verma (2204921530011)  
+Anmol Pandey (2204921530023)  
+Abhay Pratap Singh Shakya (2204921530002)
 
 **Under Supervision of**  
 **Ms. Pragati Upadhyay**
@@ -21,6 +17,8 @@
 **Dr. A. P. J. Abdul Kalam Technical University, Lucknow**
 
 **May, 2026**
+
+</div>
 
 ---
 
@@ -33,6 +31,8 @@ HOPEr is an AI-powered mental health companion designed to provide emotional sup
 The platform acts as a virtual mental wellness assistant, empowering users to track their mood, express emotions freely, and receive tailored suggestions and responses — all while ensuring privacy and authenticity. It uses LangChain, FastAPI, and Pinecone Vector Databases to retrieve meaningful, evidence-based content in real time and present it through an intuitive, calming interface.
 
 **Presentation:** [View Google Slides](https://docs.google.com/presentation/d/1Hv-E81I20iZz368yORsaNkeWFaXYYuOE/edit?usp=sharing&ouid=116054875621763352488&rtpof=true&sd=true)
+
+**Live Demo:** [https://hoper.chat/](https://hoper.chat/)
 
 ## Problem Statement
 
